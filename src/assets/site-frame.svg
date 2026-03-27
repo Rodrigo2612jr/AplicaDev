@@ -1,0 +1,18 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="16" y="16" width="608" height="388" rx="32" fill="#F6FAF9"/>
+  <rect x="58" y="60" width="524" height="300" rx="24" fill="#FFFFFF" stroke="#D6E2E0" stroke-width="2"/>
+  <rect x="58" y="60" width="524" height="54" rx="24" fill="#EEF5F4"/>
+  <circle cx="92" cy="87" r="7" fill="#B7C8C5"/>
+  <circle cx="114" cy="87" r="7" fill="#B7C8C5"/>
+  <circle cx="136" cy="87" r="7" fill="#B7C8C5"/>
+  <rect x="170" y="79" width="250" height="15" rx="7.5" fill="#D7E7E5"/>
+  <rect x="88" y="140" width="308" height="34" rx="12" fill="#DDECEA"/>
+  <rect x="88" y="188" width="254" height="16" rx="8" fill="#E3EFED"/>
+  <rect x="88" y="214" width="208" height="16" rx="8" fill="#E3EFED"/>
+  <rect x="88" y="248" width="146" height="42" rx="14" fill="#19B8A6"/>
+  <rect x="414" y="140" width="136" height="182" rx="18" fill="#E8F4F2"/>
+  <rect x="434" y="168" width="96" height="12" rx="6" fill="#B8D6D1"/>
+  <rect x="434" y="192" width="72" height="12" rx="6" fill="#B8D6D1"/>
+  <rect x="434" y="228" width="96" height="60" rx="12" fill="#19B8A6" fill-opacity="0.2"/>
+  <text x="96" y="276" font-family="Manrope, Arial, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">Alta conversao</text>
+</svg>

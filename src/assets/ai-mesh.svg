@@ -1,0 +1,28 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="40" y1="20" x2="600" y2="380" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FAFA"/>
+      <stop offset="1" stop-color="#E8F4F2"/>
+    </linearGradient>
+    <linearGradient id="line" x1="80" y1="70" x2="520" y2="350" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#18B6A4"/>
+      <stop offset="1" stop-color="#8FA3A9"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="608" height="388" rx="32" fill="url(#bg)"/>
+  <g stroke="url(#line)" stroke-width="2.5" opacity="0.85">
+    <path d="M88 300L178 212L278 248L366 160L470 210L550 132"/>
+    <path d="M108 136L198 208L292 142L388 232L484 188L546 256"/>
+    <path d="M88 210L174 124L276 178L382 102L492 138"/>
+  </g>
+  <g fill="#18B6A4">
+    <circle cx="88" cy="300" r="7"/><circle cx="178" cy="212" r="7"/><circle cx="278" cy="248" r="7"/>
+    <circle cx="366" cy="160" r="7"/><circle cx="470" cy="210" r="7"/><circle cx="550" cy="132" r="7"/>
+  </g>
+  <g fill="#8FA3A9">
+    <circle cx="108" cy="136" r="6"/><circle cx="198" cy="208" r="6"/><circle cx="292" cy="142" r="6"/>
+    <circle cx="388" cy="232" r="6"/><circle cx="484" cy="188" r="6"/><circle cx="546" cy="256" r="6"/>
+  </g>
+  <rect x="72" y="56" width="218" height="44" rx="14" fill="#FFFFFF" fill-opacity="0.84"/>
+  <text x="90" y="84" font-family="Manrope, Arial, sans-serif" font-size="18" font-weight="700" fill="#1A5851">Inteligencia aplicada a processos</text>
+</svg>

@@ -1,0 +1,23 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g1" x1="80" y1="40" x2="560" y2="380" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#19B8A6"/>
+      <stop offset="1" stop-color="#80C3BA"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="608" height="388" rx="32" fill="#F4F9F8"/>
+  <rect x="64" y="70" width="130" height="270" rx="28" fill="#FFFFFF" stroke="#D2DEDC" stroke-width="2"/>
+  <rect x="220" y="118" width="160" height="78" rx="20" fill="#EAF4F3" stroke="#B4CDC8"/>
+  <rect x="220" y="222" width="160" height="78" rx="20" fill="#EAF4F3" stroke="#B4CDC8"/>
+  <rect x="416" y="94" width="168" height="232" rx="26" fill="#FFFFFF" stroke="#D2DEDC" stroke-width="2"/>
+  <path d="M196 156H220M196 262H220M380 156H416M380 262H416" stroke="url(#g1)" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="129" cy="112" r="28" fill="#19B8A6" fill-opacity="0.16"/>
+  <circle cx="129" cy="112" r="12" fill="#19B8A6"/>
+  <rect x="92" y="158" width="74" height="12" rx="6" fill="#D5E3E1"/>
+  <rect x="92" y="182" width="54" height="12" rx="6" fill="#D5E3E1"/>
+  <rect x="92" y="206" width="64" height="12" rx="6" fill="#D5E3E1"/>
+  <rect x="438" y="126" width="124" height="14" rx="7" fill="#D8E9E7"/>
+  <rect x="438" y="154" width="96" height="14" rx="7" fill="#D8E9E7"/>
+  <rect x="438" y="202" width="124" height="52" rx="14" fill="#19B8A6" fill-opacity="0.18"/>
+  <text x="448" y="235" font-family="Manrope, Arial, sans-serif" font-size="16" font-weight="700" fill="#157D72">Fluxo app + sistema</text>
+</svg>

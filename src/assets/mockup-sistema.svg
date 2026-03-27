@@ -1,0 +1,281 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <defs>
+    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#18b6a4" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#18b6a4" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="chartGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#56d6c8" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#56d6c8" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1a1e"/>
+      <stop offset="100%" stop-color="#091316"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="url(#bgGrad)"/>
+
+  <!-- ── SIDEBAR ── -->
+  <rect x="0" y="0" width="210" height="900" fill="#080f11"/>
+  <line x1="210" y1="0" x2="210" y2="900" stroke="rgba(24,182,164,0.12)" stroke-width="1"/>
+
+  <!-- Logo -->
+  <rect x="18" y="20" width="96" height="9" rx="4" fill="#18b6a4" opacity="0.9"/>
+  <rect x="18" y="34" width="64" height="6" rx="3" fill="#18b6a4" opacity="0.38"/>
+
+  <!-- Divider -->
+  <line x1="14" y1="66" x2="196" y2="66" stroke="rgba(24,182,164,0.1)" stroke-width="1"/>
+
+  <!-- Active nav item -->
+  <rect x="10" y="78" width="190" height="36" rx="10" fill="rgba(24,182,164,0.14)"/>
+  <rect x="22" y="88" width="10" height="10" rx="3" fill="#18b6a4"/>
+  <rect x="40" y="90" width="72" height="6" rx="3" fill="#18b6a4"/>
+
+  <!-- Nav items -->
+  <rect x="22" y="130" width="10" height="10" rx="3" fill="rgba(130,185,178,0.38)"/>
+  <rect x="40" y="132" width="84" height="6" rx="3" fill="rgba(130,185,178,0.32)"/>
+  <rect x="22" y="166" width="10" height="10" rx="3" fill="rgba(130,185,178,0.38)"/>
+  <rect x="40" y="168" width="62" height="6" rx="3" fill="rgba(130,185,178,0.32)"/>
+  <rect x="22" y="202" width="10" height="10" rx="3" fill="rgba(130,185,178,0.38)"/>
+  <rect x="40" y="204" width="78" height="6" rx="3" fill="rgba(130,185,178,0.32)"/>
+  <rect x="22" y="238" width="10" height="10" rx="3" fill="rgba(130,185,178,0.38)"/>
+  <rect x="40" y="240" width="90" height="6" rx="3" fill="rgba(130,185,178,0.32)"/>
+  <rect x="22" y="274" width="10" height="10" rx="3" fill="rgba(130,185,178,0.38)"/>
+  <rect x="40" y="276" width="56" height="6" rx="3" fill="rgba(130,185,178,0.32)"/>
+
+  <!-- Sidebar section -->
+  <rect x="18" y="330" width="48" height="5" rx="2" fill="rgba(90,130,125,0.38)"/>
+  <rect x="22" y="350" width="10" height="10" rx="3" fill="rgba(130,185,178,0.28)"/>
+  <rect x="40" y="352" width="76" height="6" rx="3" fill="rgba(130,185,178,0.25)"/>
+  <rect x="22" y="386" width="10" height="10" rx="3" fill="rgba(130,185,178,0.28)"/>
+  <rect x="40" y="388" width="60" height="6" rx="3" fill="rgba(130,185,178,0.25)"/>
+
+  <!-- Sidebar avatar -->
+  <circle cx="30" cy="858" r="15" fill="rgba(24,182,164,0.18)"/>
+  <rect x="54" y="850" width="76" height="7" rx="3" fill="rgba(175,210,205,0.48)"/>
+  <rect x="54" y="863" width="54" height="5" rx="2" fill="rgba(90,130,125,0.32)"/>
+
+  <!-- ── HEADER ── -->
+  <rect x="210" y="0" width="990" height="60" fill="#0c1820"/>
+  <line x1="210" y1="60" x2="1200" y2="60" stroke="rgba(24,182,164,0.1)" stroke-width="1"/>
+
+  <!-- Page title -->
+  <rect x="232" y="20" width="110" height="9" rx="4" fill="rgba(195,228,224,0.78)"/>
+  <rect x="232" y="36" width="72" height="6" rx="3" fill="rgba(110,158,152,0.4)"/>
+
+  <!-- Search bar -->
+  <rect x="490" y="16" width="220" height="28" rx="8" fill="rgba(255,255,255,0.04)" stroke="rgba(24,182,164,0.12)" stroke-width="1"/>
+  <rect x="506" y="27" width="76" height="6" rx="3" fill="rgba(90,130,125,0.28)"/>
+
+  <!-- Right icons -->
+  <circle cx="1110" cy="30" r="13" fill="rgba(255,255,255,0.04)" stroke="rgba(24,182,164,0.12)" stroke-width="1"/>
+  <rect x="1104" y="24" width="12" height="2" rx="1" fill="rgba(140,190,185,0.5)"/>
+  <rect x="1104" y="29" width="12" height="2" rx="1" fill="rgba(140,190,185,0.5)"/>
+  <rect x="1104" y="34" width="8" height="2" rx="1" fill="rgba(140,190,185,0.5)"/>
+  <circle cx="1152" cy="30" r="16" fill="rgba(24,182,164,0.18)"/>
+
+  <!-- ── STAT CARDS ── -->
+  <!-- Card 1 -->
+  <rect x="232" y="80" width="216" height="104" rx="16" fill="#0f2227" stroke="rgba(24,182,164,0.1)" stroke-width="1"/>
+  <rect x="252" y="98" width="78" height="6" rx="3" fill="rgba(110,160,155,0.45)"/>
+  <rect x="252" y="114" width="94" height="18" rx="4" fill="rgba(196,232,228,0.84)"/>
+  <rect x="252" y="140" width="72" height="6" rx="3" fill="rgba(24,182,164,0.68)"/>
+  <rect x="380" y="96" width="42" height="42" rx="12" fill="rgba(24,182,164,0.12)"/>
+  <rect x="392" y="110" width="18" height="14" rx="3" fill="rgba(24,182,164,0.5)"/>
+
+  <!-- Card 2 -->
+  <rect x="460" y="80" width="216" height="104" rx="16" fill="#0f2227" stroke="rgba(24,182,164,0.1)" stroke-width="1"/>
+  <rect x="480" y="98" width="92" height="6" rx="3" fill="rgba(110,160,155,0.45)"/>
+  <rect x="480" y="114" width="78" height="18" rx="4" fill="rgba(196,232,228,0.84)"/>
+  <rect x="480" y="140" width="86" height="6" rx="3" fill="rgba(86,214,200,0.58)"/>
+  <rect x="608" y="96" width="42" height="42" rx="12" fill="rgba(86,214,200,0.1)"/>
+
+  <!-- Card 3 -->
+  <rect x="688" y="80" width="216" height="104" rx="16" fill="#0f2227" stroke="rgba(24,182,164,0.1)" stroke-width="1"/>
+  <rect x="708" y="98" width="68" height="6" rx="3" fill="rgba(110,160,155,0.45)"/>
+  <rect x="708" y="114" width="110" height="18" rx="4" fill="rgba(196,232,228,0.84)"/>
+  <rect x="708" y="140" width="58" height="6" rx="3" fill="rgba(255,185,90,0.58)"/>
+  <rect x="836" y="96" width="42" height="42" rx="12" fill="rgba(255,185,90,0.1)"/>
+
+  <!-- Card 4 (accent) -->
+  <rect x="916" y="80" width="252" height="104" rx="16" fill="rgba(24,182,164,0.12)" stroke="rgba(24,182,164,0.24)" stroke-width="1"/>
+  <rect x="936" y="98" width="86" height="6" rx="3" fill="rgba(175,224,218,0.58)"/>
+  <rect x="936" y="114" width="98" height="18" rx="4" fill="rgba(86,214,200,0.92)"/>
+  <rect x="936" y="140" width="118" height="6" rx="3" fill="rgba(110,196,190,0.5)"/>
+  <rect x="1096" y="96" width="42" height="42" rx="12" fill="rgba(24,182,164,0.2)"/>
+
+  <!-- ── CHART PANEL ── -->
+  <rect x="232" y="204" width="572" height="316" rx="16" fill="#0f2227" stroke="rgba(24,182,164,0.1)" stroke-width="1"/>
+
+  <!-- Chart header -->
+  <rect x="252" y="226" width="122" height="8" rx="4" fill="rgba(195,228,224,0.8)"/>
+  <rect x="252" y="242" width="82" height="6" rx="3" fill="rgba(110,158,152,0.38)"/>
+
+  <!-- Period toggles -->
+  <rect x="686" y="222" width="42" height="20" rx="6" fill="rgba(24,182,164,0.14)" stroke="rgba(24,182,164,0.2)" stroke-width="1"/>
+  <rect x="734" y="222" width="42" height="20" rx="6" fill="rgba(255,255,255,0.03)"/>
+  <rect x="782" y="222" width="42" height="20" rx="6" fill="rgba(255,255,255,0.03)"/>
+
+  <!-- Y-axis labels -->
+  <rect x="252" y="272" width="22" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="252" y="305" width="22" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="252" y="338" width="22" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="252" y="371" width="22" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="252" y="404" width="22" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+
+  <!-- Grid lines -->
+  <line x1="282" y1="274" x2="784" y2="274" stroke="rgba(24,182,164,0.06)" stroke-width="1"/>
+  <line x1="282" y1="307" x2="784" y2="307" stroke="rgba(24,182,164,0.06)" stroke-width="1"/>
+  <line x1="282" y1="340" x2="784" y2="340" stroke="rgba(24,182,164,0.06)" stroke-width="1"/>
+  <line x1="282" y1="373" x2="784" y2="373" stroke="rgba(24,182,164,0.06)" stroke-width="1"/>
+  <line x1="282" y1="406" x2="784" y2="406" stroke="rgba(24,182,164,0.06)" stroke-width="1"/>
+
+  <!-- Area fill primary -->
+  <path d="M282,400 C330,380 365,350 410,325 C455,300 490,310 535,285 C580,260 625,272 668,248 C700,235 740,238 784,222 L784,440 L282,440 Z" fill="url(#chartGrad)"/>
+  <!-- Area fill compare -->
+  <path d="M282,420 C330,412 368,406 412,400 C456,394 492,388 536,382 C580,375 624,366 668,358 C700,352 740,354 784,346 L784,440 L282,440 Z" fill="url(#chartGrad2)"/>
+
+  <!-- Chart line primary -->
+  <path d="M282,400 C330,380 365,350 410,325 C455,300 490,310 535,285 C580,260 625,272 668,248 C700,235 740,238 784,222" stroke="#18b6a4" stroke-width="2.5" fill="none" filter="url(#glow)"/>
+  <!-- Chart line compare -->
+  <path d="M282,420 C330,412 368,406 412,400 C456,394 492,388 536,382 C580,375 624,366 668,358 C700,352 740,354 784,346" stroke="rgba(86,214,200,0.44)" stroke-width="1.5" fill="none" stroke-dasharray="5,3"/>
+
+  <!-- Chart dots -->
+  <circle cx="410" cy="325" r="4.5" fill="#0f2227" stroke="#18b6a4" stroke-width="2"/>
+  <circle cx="535" cy="285" r="4.5" fill="#0f2227" stroke="#18b6a4" stroke-width="2"/>
+  <circle cx="668" cy="248" r="5" fill="#18b6a4" filter="url(#glow)"/>
+
+  <!-- Tooltip -->
+  <rect x="644" y="210" width="92" height="44" rx="10" fill="#1a3a40" stroke="rgba(24,182,164,0.3)" stroke-width="1"/>
+  <rect x="656" y="222" width="52" height="6" rx="3" fill="rgba(140,190,185,0.5)"/>
+  <rect x="656" y="234" width="68" height="9" rx="3" fill="rgba(86,214,200,0.9)"/>
+  <line x1="668" y1="248" x2="668" y2="254" stroke="rgba(24,182,164,0.5)" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- X-axis labels -->
+  <rect x="290" y="452" width="28" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="366" y="452" width="28" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="442" y="452" width="28" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="518" y="452" width="28" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="594" y="452" width="28" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="670" y="452" width="28" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+  <rect x="746" y="452" width="28" height="5" rx="2" fill="rgba(90,130,125,0.3)"/>
+
+  <!-- ── RIGHT PANEL ── -->
+  <rect x="820" y="204" width="348" height="316" rx="16" fill="#0f2227" stroke="rgba(24,182,164,0.1)" stroke-width="1"/>
+  <rect x="840" y="226" width="116" height="8" rx="4" fill="rgba(195,228,224,0.8)"/>
+
+  <!-- Progress bars -->
+  <rect x="840" y="258" width="64" height="5" rx="2" fill="rgba(110,160,155,0.38)"/>
+  <rect x="840" y="270" width="288" height="10" rx="5" fill="rgba(255,255,255,0.04)"/>
+  <rect x="840" y="270" width="218" height="10" rx="5" fill="#18b6a4"/>
+  <rect x="1062" y="268" width="36" height="7" rx="3" fill="rgba(24,182,164,0.5)"/>
+
+  <rect x="840" y="298" width="52" height="5" rx="2" fill="rgba(110,160,155,0.38)"/>
+  <rect x="840" y="310" width="288" height="10" rx="5" fill="rgba(255,255,255,0.04)"/>
+  <rect x="840" y="310" width="166" height="10" rx="5" fill="rgba(86,214,200,0.7)"/>
+  <rect x="1062" y="308" width="36" height="7" rx="3" fill="rgba(86,214,200,0.45)"/>
+
+  <rect x="840" y="338" width="74" height="5" rx="2" fill="rgba(110,160,155,0.38)"/>
+  <rect x="840" y="350" width="288" height="10" rx="5" fill="rgba(255,255,255,0.04)"/>
+  <rect x="840" y="350" width="248" height="10" rx="5" fill="rgba(24,182,164,0.48)"/>
+  <rect x="1062" y="348" width="36" height="7" rx="3" fill="rgba(24,182,164,0.4)"/>
+
+  <rect x="840" y="378" width="58" height="5" rx="2" fill="rgba(110,160,155,0.38)"/>
+  <rect x="840" y="390" width="288" height="10" rx="5" fill="rgba(255,255,255,0.04)"/>
+  <rect x="840" y="390" width="106" height="10" rx="5" fill="rgba(255,185,90,0.58)"/>
+  <rect x="1062" y="388" width="36" height="7" rx="3" fill="rgba(255,185,90,0.38)"/>
+
+  <rect x="840" y="418" width="84" height="5" rx="2" fill="rgba(110,160,155,0.38)"/>
+  <rect x="840" y="430" width="288" height="10" rx="5" fill="rgba(255,255,255,0.04)"/>
+  <rect x="840" y="430" width="194" height="10" rx="5" fill="rgba(86,214,200,0.44)"/>
+  <rect x="1062" y="428" width="36" height="7" rx="3" fill="rgba(86,214,200,0.3)"/>
+
+  <!-- Mini donut area -->
+  <circle cx="916" cy="490" r="38" fill="none" stroke="rgba(24,182,164,0.12)" stroke-width="12"/>
+  <circle cx="916" cy="490" r="38" fill="none" stroke="#18b6a4" stroke-width="12" stroke-dasharray="144 96" stroke-dashoffset="36" stroke-linecap="round"/>
+  <circle cx="916" cy="490" r="38" fill="none" stroke="rgba(86,214,200,0.5)" stroke-width="12" stroke-dasharray="64 176" stroke-dashoffset="-108" stroke-linecap="round"/>
+  <rect x="900" y="484" width="32" height="12" rx="3" fill="rgba(195,228,224,0.8)"/>
+
+  <!-- Legend -->
+  <rect x="970" y="470" width="10" height="10" rx="3" fill="#18b6a4"/>
+  <rect x="986" y="473" width="70" height="6" rx="3" fill="rgba(140,190,185,0.5)"/>
+  <rect x="970" y="490" width="10" height="10" rx="3" fill="rgba(86,214,200,0.5)"/>
+  <rect x="986" y="493" width="58" height="6" rx="3" fill="rgba(140,190,185,0.5)"/>
+  <rect x="970" y="510" width="10" height="10" rx="3" fill="rgba(255,185,90,0.5)"/>
+  <rect x="986" y="513" width="64" height="6" rx="3" fill="rgba(140,190,185,0.5)"/>
+
+  <!-- ── TABLE ── -->
+  <rect x="232" y="540" width="936" height="330" rx="16" fill="#0f2227" stroke="rgba(24,182,164,0.1)" stroke-width="1"/>
+
+  <!-- Table header bar -->
+  <rect x="252" y="562" width="104" height="8" rx="4" fill="rgba(195,228,224,0.8)"/>
+  <rect x="1060" y="558" width="88" height="24" rx="8" fill="rgba(24,182,164,0.12)" stroke="rgba(24,182,164,0.2)" stroke-width="1"/>
+
+  <!-- Column headers row -->
+  <rect x="232" y="590" width="936" height="30" fill="rgba(255,255,255,0.025)"/>
+  <rect x="252" y="601" width="82" height="6" rx="3" fill="rgba(90,130,125,0.42)"/>
+  <rect x="406" y="601" width="62" height="6" rx="3" fill="rgba(90,130,125,0.42)"/>
+  <rect x="558" y="601" width="72" height="6" rx="3" fill="rgba(90,130,125,0.42)"/>
+  <rect x="710" y="601" width="54" height="6" rx="3" fill="rgba(90,130,125,0.42)"/>
+  <rect x="860" y="601" width="62" height="6" rx="3" fill="rgba(90,130,125,0.42)"/>
+  <rect x="1040" y="601" width="48" height="6" rx="3" fill="rgba(90,130,125,0.42)"/>
+
+  <!-- Row 1 -->
+  <rect x="232" y="620" width="936" height="46" fill="rgba(255,255,255,0.018)"/>
+  <circle cx="268" cy="643" r="13" fill="rgba(24,182,164,0.15)"/>
+  <rect x="290" y="636" width="88" height="7" rx="3" fill="rgba(186,222,217,0.7)"/>
+  <rect x="290" y="649" width="64" height="5" rx="2" fill="rgba(90,130,125,0.32)"/>
+  <rect x="406" y="640" width="72" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="558" y="640" width="80" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="700" y="636" width="62" height="14" rx="7" fill="rgba(24,182,164,0.14)"/>
+  <rect x="712" y="641" width="38" height="5" rx="2" fill="rgba(24,182,164,0.8)"/>
+  <rect x="1040" y="640" width="52" height="6" rx="3" fill="rgba(24,182,164,0.75)"/>
+
+  <!-- Row 2 -->
+  <circle cx="268" cy="689" r="13" fill="rgba(86,214,200,0.12)"/>
+  <rect x="290" y="682" width="100" height="7" rx="3" fill="rgba(186,222,217,0.7)"/>
+  <rect x="290" y="695" width="76" height="5" rx="2" fill="rgba(90,130,125,0.32)"/>
+  <rect x="406" y="686" width="68" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="558" y="686" width="76" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="700" y="682" width="62" height="14" rx="7" fill="rgba(86,214,200,0.12)"/>
+  <rect x="712" y="687" width="38" height="5" rx="2" fill="rgba(86,214,200,0.7)"/>
+  <rect x="1040" y="686" width="44" height="6" rx="3" fill="rgba(86,214,200,0.68)"/>
+
+  <!-- Row 3 -->
+  <rect x="232" y="712" width="936" height="46" fill="rgba(255,255,255,0.018)"/>
+  <circle cx="268" cy="735" r="13" fill="rgba(255,185,90,0.12)"/>
+  <rect x="290" y="728" width="78" height="7" rx="3" fill="rgba(186,222,217,0.7)"/>
+  <rect x="290" y="741" width="58" height="5" rx="2" fill="rgba(90,130,125,0.32)"/>
+  <rect x="406" y="732" width="78" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="558" y="732" width="66" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="700" y="728" width="62" height="14" rx="7" fill="rgba(255,185,90,0.12)"/>
+  <rect x="712" y="733" width="38" height="5" rx="2" fill="rgba(255,185,90,0.7)"/>
+  <rect x="1040" y="732" width="58" height="6" rx="3" fill="rgba(255,185,90,0.58)"/>
+
+  <!-- Row 4 -->
+  <circle cx="268" cy="781" r="13" fill="rgba(24,182,164,0.12)"/>
+  <rect x="290" y="774" width="92" height="7" rx="3" fill="rgba(186,222,217,0.7)"/>
+  <rect x="290" y="787" width="70" height="5" rx="2" fill="rgba(90,130,125,0.32)"/>
+  <rect x="406" y="778" width="62" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="558" y="778" width="84" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="700" y="774" width="62" height="14" rx="7" fill="rgba(24,182,164,0.14)"/>
+  <rect x="712" y="779" width="38" height="5" rx="2" fill="rgba(24,182,164,0.8)"/>
+  <rect x="1040" y="778" width="48" height="6" rx="3" fill="rgba(24,182,164,0.75)"/>
+
+  <!-- Row 5 -->
+  <rect x="232" y="804" width="936" height="46" fill="rgba(255,255,255,0.018)"/>
+  <circle cx="268" cy="827" r="13" fill="rgba(86,214,200,0.12)"/>
+  <rect x="290" y="820" width="84" height="7" rx="3" fill="rgba(186,222,217,0.7)"/>
+  <rect x="290" y="833" width="62" height="5" rx="2" fill="rgba(90,130,125,0.32)"/>
+  <rect x="406" y="824" width="72" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="558" y="824" width="78" height="6" rx="3" fill="rgba(165,208,202,0.5)"/>
+  <rect x="700" y="820" width="62" height="14" rx="7" fill="rgba(86,214,200,0.12)"/>
+  <rect x="712" y="825" width="38" height="5" rx="2" fill="rgba(86,214,200,0.7)"/>
+  <rect x="1040" y="824" width="52" height="6" rx="3" fill="rgba(86,214,200,0.62)"/>
+</svg>
