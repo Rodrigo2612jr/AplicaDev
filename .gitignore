@@ -3,3 +3,16 @@ dist
 .vscode
 .DS_Store
 *.local
+.env
+.vercel
+
+# AplicaDev SaaS — repo separado (Rodrigo2612jr/aplicadev-saas)
+/saas/
+
+# Claude Code local configs
+.claude/
+.agents/
+skills-lock.json
+
+# TypeScript build cache
+*.tsbuildinfo
