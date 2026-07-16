@@ -732,6 +732,142 @@ function Pricing({ onCta }: { onCta: () => void }) {
   )
 }
 
+/* ── PLANOS DE MENSALIDADE ──────────────────────────────────────── */
+
+const PLANS = [
+  {
+    emoji: '🌐',
+    name: 'Presença',
+    who: 'Pra quem tem landing page ou site institucional',
+    monthly: 69.9,
+    features: [
+      'Hospedagem premium + domínio renovado',
+      'Site vigiado 24/7 (avisamos antes de você perceber)',
+      'Backup e certificado de segurança',
+      '1 ajuste de conteúdo por mês incluso',
+      'Suporte direto no WhatsApp',
+    ],
+    badge: null,
+  },
+  {
+    emoji: '🎯',
+    name: 'Captação',
+    who: 'Pra quem quer o site trabalhando pra vender',
+    monthly: 119.9,
+    features: [
+      'Tudo do Presença',
+      'Formulário/quiz que capta clientes sozinho',
+      'E-mails automáticos pros seus leads',
+      'Lead cai direto no seu WhatsApp',
+      'Relatório mensal: quantos contatos seu site gerou',
+    ],
+    badge: 'Mais escolhido',
+  },
+  {
+    emoji: '⚙️',
+    name: 'Sistema',
+    who: 'Pra quem tem um sistema rodando o negócio',
+    monthly: 199.9,
+    features: [
+      'Banco de dados com backup todo dia',
+      'Qualquer bug corrigido sem custo extra',
+      '45 min de melhorias por mês inclusos',
+      'Monitoramento 24/7 com alerta imediato',
+      'Suporte prioritário',
+    ],
+    badge: null,
+  },
+  {
+    emoji: '🤖',
+    name: 'Operação',
+    who: 'Pra quem quer a operação toda automatizada',
+    monthly: 349.9,
+    features: [
+      'Tudo do Sistema',
+      'Bot de WhatsApp atendendo por você',
+      '500 mensagens automáticas/mês inclusas',
+      'Automações entre seus sistemas (n8n)',
+      'Resposta em até 4h úteis',
+    ],
+    badge: null,
+  },
+]
+
+const brlPlan = (n: number) =>
+  n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+function Plans({ onCta }: { onCta: () => void }) {
+  const [yearly, setYearly] = useState(false)
+
+  return (
+    <section className="plans" id="planos">
+      <div className="container">
+        <div className="section-head" data-reveal>
+          <span className="tag">Mensalidade</span>
+          <h2 className="section-title">
+            Entregamos e <span className="gradient-text">cuidamos pra sempre</span>
+          </h2>
+          <p className="section-sub">
+            Seu projeto no ar, vigiado 24/7 e evoluindo todo mês. Você cuida do negócio, a gente cuida da tecnologia.
+          </p>
+        </div>
+
+        <div className="plans-toggle" data-reveal>
+          <button
+            className={`plans-toggle__opt${!yearly ? ' active' : ''}`}
+            onClick={() => setYearly(false)}
+          >
+            Mensal
+          </button>
+          <button
+            className={`plans-toggle__opt${yearly ? ' active' : ''}`}
+            onClick={() => setYearly(true)}
+          >
+            Anual <span className="plans-toggle__save">2 meses grátis</span>
+          </button>
+        </div>
+
+        <div className="plans-grid" data-reveal>
+          {PLANS.map(p => (
+            <div key={p.name} className={`plan-card${p.badge ? ' plan-card--hl' : ''}`}>
+              {p.badge && <span className="plan-card__badge">⭐ {p.badge}</span>}
+              <div className="plan-card__emoji">{p.emoji}</div>
+              <div className="plan-card__name">{p.name}</div>
+              <div className="plan-card__who">{p.who}</div>
+              <div className="plan-card__price">
+                <span className="plan-card__currency">R$</span>
+                <span className="plan-card__amount">
+                  {brlPlan(yearly ? (p.monthly * 10) / 12 : p.monthly)}
+                </span>
+                <span className="plan-card__period">/mês</span>
+              </div>
+              {yearly ? (
+                <div className="plan-card__note">
+                  R${brlPlan(p.monthly * 10)}/ano · economia de R${brlPlan(p.monthly * 2)}
+                </div>
+              ) : (
+                <div className="plan-card__note">sem fidelidade · cancele quando quiser</div>
+              )}
+              <ul className="plan-card__feats">
+                {p.features.map(f => (
+                  <li key={f}>✓ {f}</li>
+                ))}
+              </ul>
+              <button className={p.badge ? 'btn-primary plan-card__cta' : 'btn-ghost plan-card__cta'} onClick={onCta}>
+                Começar pelo diagnóstico →
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <p className="plans-foot" data-reveal>
+          🔒 Preço travado por 12 meses (reajuste só pelo IPCA, uma vez ao ano). Ajustes além do incluso: R$120/h ou upgrade de plano. No anual, o valor equivale a <strong>10 mensalidades</strong>: 2 meses de presente.
+        </p>
+      </div>
+    </section>
+  )
+}
+
 /* ── FAQ ────────────────────────────────────────────────────────── */
 
 function FAQ() {
@@ -912,6 +1048,7 @@ function LandingPage() {
         <Process />
         <Testimonials />
         <Pricing onCta={handleCta} />
+        <Plans onCta={handleCta} />
         <FAQ />
         <CTAFinal onCta={handleCta} />
       </main>
