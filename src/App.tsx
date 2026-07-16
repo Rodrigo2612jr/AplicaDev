@@ -736,13 +736,13 @@ function Pricing({ onCta }: { onCta: () => void }) {
 
 const PLANS = [
   {
-    emoji: '🌐',
-    name: 'Presença',
-    who: 'Pra quem tem landing page ou site institucional',
-    monthly: 69.9,
+    emoji: '🎯',
+    name: 'Captação',
+    who: 'Pra quem tem página de captação no ar',
+    monthly: 59.9,
     features: [
       'Hospedagem premium + domínio renovado',
-      'Site vigiado 24/7 (avisamos antes de você perceber)',
+      'Página e formulário vigiados 24/7',
       'Backup e certificado de segurança',
       '1 ajuste de conteúdo por mês incluso',
       'Suporte direto no WhatsApp',
@@ -750,16 +750,16 @@ const PLANS = [
     badge: null,
   },
   {
-    emoji: '🎯',
-    name: 'Captação',
-    who: 'Pra quem quer o site trabalhando pra vender',
-    monthly: 119.9,
+    emoji: '🌐',
+    name: 'Site',
+    who: 'Pra quem tem site completo',
+    monthly: 99.9,
     features: [
-      'Tudo do Presença',
-      'Formulário/quiz que capta clientes sozinho',
-      'E-mails automáticos pros seus leads',
-      'Lead cai direto no seu WhatsApp',
-      'Relatório mensal: quantos contatos seu site gerou',
+      'Tudo do Captação',
+      'Ajustes em qualquer página (2 por mês)',
+      'Presença no Google acompanhada (site + Maps)',
+      'Relatório mensal: visitas e contatos gerados',
+      'Suporte prioritário no WhatsApp',
     ],
     badge: 'Mais escolhido',
   },
@@ -767,7 +767,7 @@ const PLANS = [
     emoji: '⚙️',
     name: 'Sistema',
     who: 'Pra quem tem um sistema rodando o negócio',
-    monthly: 199.9,
+    monthly: 249.9,
     features: [
       'Banco de dados com backup todo dia',
       'Qualquer bug corrigido sem custo extra',
@@ -781,7 +781,7 @@ const PLANS = [
     emoji: '🤖',
     name: 'Operação',
     who: 'Pra quem quer a operação toda automatizada',
-    monthly: 349.9,
+    monthly: 399.9,
     features: [
       'Tudo do Sistema',
       'Bot de WhatsApp atendendo por você',
