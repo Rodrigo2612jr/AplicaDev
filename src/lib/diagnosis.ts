@@ -154,11 +154,11 @@ export function generateTravas(d: LeadDados): Trava[] {
   })
   if (isBaseFragil(d)) t.push({
     titulo: 'Sua carteira de clientes vive no seu celular',
-    detalhe: 'Perdeu o aparelho, perdeu anos de relacionamento — é seu ativo mais valioso solto.',
+    detalhe: 'Perdeu o aparelho, perdeu anos de relacionamento. É seu ativo mais valioso solto.',
   })
   if (isInvisivelGoogle(d)) t.push({
     titulo: 'Quem te procura no Google não te encontra',
-    detalhe: 'A demanda mais quente — quem já quer comprar — está indo pro concorrente que aparece.',
+    detalhe: 'A demanda mais quente, quem já quer comprar, está indo pro concorrente que aparece.',
   })
   if (isDonoGargalo(d)) t.push({
     titulo: 'Se você para, o negócio para junto',

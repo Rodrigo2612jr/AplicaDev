@@ -108,9 +108,9 @@ function buildLeadMsg(d: FD, rec: Rec, temperatura: string): string {
     ``,
     `Acabei de fazer o diagnóstico gratuito no site da AplicaDev e quero ver como destravar meu negócio.`,
     ``,
-    `— Ramo: ${d.nicho || '-'}`,
-    `— Atendo: ${d.clientesMes || '-'} clientes/mês`,
-    `— O que faz mais sentido pra mim: ${recLabel[rec]}`,
+    `• Ramo: ${d.nicho || '-'}`,
+    `• Atendo: ${d.clientesMes || '-'} clientes/mês`,
+    `• O que faz mais sentido pra mim: ${recLabel[rec]}`,
     ``,
     `Fico no aguardo! 🙏`,
     ``,
@@ -314,7 +314,7 @@ export default function Diagnostico() {
             <div className="diag-intro">
               <span className="diag-intro__badge"><span className="dot" /> Diagnóstico gratuito · 90 segundos</span>
               <h1 className="diag-intro__title">
-                Seu negócio está deixando <span className="grad">dinheiro na mesa</span> — e você nem percebe
+                Seu negócio está deixando <span className="grad">dinheiro na mesa</span> sem você perceber
               </h1>
               <p className="diag-intro__sub">
                 Responde algumas perguntas rápidas sobre o seu dia a dia e a gente te mostra as travas que estão
@@ -322,7 +322,7 @@ export default function Diagnostico() {
                 a partir de <strong>R$999,90</strong>.
               </p>
               <div className="diag-intro__proof">
-                ⚡ Já colocamos dezenas de negócios no ar em até 10 dias — sem enrolação e sem termo técnico.
+                ⚡ Já colocamos dezenas de negócios no ar em até 10 dias, sem enrolação e sem termo técnico.
               </div>
             </div>
           )}
@@ -351,7 +351,7 @@ export default function Diagnostico() {
                     <Opt label="Acho que é um site" selected={data.serviceChoice === 'site'} onClick={() => set('serviceChoice', 'site')} />
                     <Opt label="Acho que é um app" selected={data.serviceChoice === 'app'} onClick={() => set('serviceChoice', 'app')} />
                     <Opt label="Acho que é um sistema pra organizar tudo" selected={data.serviceChoice === 'sistema'} onClick={() => set('serviceChoice', 'sistema')} />
-                    <Opt label="Não faço ideia — quero que vocês me digam" selected={data.serviceChoice === 'nao-sei'} onClick={() => set('serviceChoice', 'nao-sei')} />
+                    <Opt label="Não faço ideia, quero que vocês me digam" selected={data.serviceChoice === 'nao-sei'} onClick={() => set('serviceChoice', 'nao-sei')} />
                   </div>
                 </Q>
               </div>
@@ -361,7 +361,7 @@ export default function Diagnostico() {
           {/* ── PORTE ── */}
           {step === 'porte' && (
             <div className="diag-step">
-              <StepHead emoji="📊" title="Seu negócio em números" sub="Nada de conta difícil — só o que você já sabe de cabeça." />
+              <StepHead emoji="📊" title="Seu negócio em números" sub="Nada de conta difícil, só o que você já sabe de cabeça." />
               <div className="diag-section">
                 <Q label="Quantos clientes você atende num mês normal?">
                   <div className="diag-opts-row">
@@ -539,11 +539,11 @@ export default function Diagnostico() {
           {/* ── FILTRO ── */}
           {step === 'filtro' && (
             <div className="diag-step">
-              <StepHead emoji="🎯" title="Última parte: o que separa quem tá curioso de quem quer resolver de verdade" sub="Só pra montar a proposta certa pro seu momento — nossos projetos começam em R$999,90." />
+              <StepHead emoji="🎯" title="Última parte: o que separa quem tá curioso de quem quer resolver de verdade" sub="Só pra montar a proposta certa pro seu momento. Nossos projetos começam em R$999,90." />
               <div className="diag-section">
                 <Q label="Pra entregar a solução completa que resolve isso, quanto faz sentido investir agora?">
                   <div className="diag-opts-col">
-                    <Opt label="A partir de R$999 — quero começar enxuto" selected={data.orcamento === 'ate-1k'} onClick={() => set('orcamento', 'ate-1k')} />
+                    <Opt label="A partir de R$999, quero começar enxuto" selected={data.orcamento === 'ate-1k'} onClick={() => set('orcamento', 'ate-1k')} />
                     <Opt label="R$1 mil a R$3 mil" selected={data.orcamento === '1-3k'} onClick={() => set('orcamento', '1-3k')} />
                     <Opt label="R$3 mil a R$10 mil" selected={data.orcamento === '3-10k'} onClick={() => set('orcamento', '3-10k')} />
                     <Opt label="Acima de R$10 mil" selected={data.orcamento === '10k+'} onClick={() => set('orcamento', '10k+')} />
@@ -555,12 +555,12 @@ export default function Diagnostico() {
                     <Opt label="Sou eu, decido sozinho" selected={data.decisor === 'sozinho'} onClick={() => set('decisor', 'sozinho')} />
                     <Opt label="Eu e mais um sócio" selected={data.decisor === 'socio'} onClick={() => set('decisor', 'socio')} />
                     <Opt label="Preciso alinhar com sócio/família antes" selected={data.decisor === 'alinhar'} onClick={() => set('decisor', 'alinhar')} />
-                    <Opt label="Não sou eu — pesquiso pra empresa/meu chefe" selected={data.decisor === 'nao-sou-eu'} onClick={() => set('decisor', 'nao-sou-eu')} />
+                    <Opt label="Não sou eu, pesquiso pra empresa ou meu chefe" selected={data.decisor === 'nao-sou-eu'} onClick={() => set('decisor', 'nao-sou-eu')} />
                   </div>
                 </Q>
                 <Q label="Pra quando você quer isso de pé?">
                   <div className="diag-opts-col">
-                    <Opt label="Pra ontem — já tô perdendo dinheiro" selected={data.urgencia === 'ontem'} onClick={() => set('urgencia', 'ontem')} />
+                    <Opt label="Pra ontem, já tô perdendo dinheiro" selected={data.urgencia === 'ontem'} onClick={() => set('urgencia', 'ontem')} />
                     <Opt label="Nas próximas semanas" selected={data.urgencia === 'semanas'} onClick={() => set('urgencia', 'semanas')} />
                     <Opt label="Nos próximos meses" selected={data.urgencia === 'meses'} onClick={() => set('urgencia', 'meses')} />
                     <Opt label="Só pesquisando por enquanto" selected={data.urgencia === 'pesquisando'} onClick={() => set('urgencia', 'pesquisando')} />
@@ -604,7 +604,7 @@ export default function Diagnostico() {
               <div className="diag-result__box">
                 <div className="diag-result__service-name">💡 A boa notícia</div>
                 <p className="diag-result__cta-copy">
-                  Cada uma dessas travas tem solução — e a gente já sabe exatamente como destravar no seu caso.
+                  Cada uma dessas travas tem solução, e a gente já sabe exatamente como destravar no seu caso.
                   Chama no WhatsApp que eu te mostro o passo a passo (e quanto isso tá te custando por mês).
                 </p>
               </div>
@@ -617,7 +617,7 @@ export default function Diagnostico() {
               </div>
 
               <div className="diag-result__note">
-                Sem compromisso. Você fala direto com quem vai desenvolver — sem call center, sem enrolação.
+                Sem compromisso. Você fala direto com quem vai desenvolver, sem call center e sem enrolação.
               </div>
             </div>
           )}
