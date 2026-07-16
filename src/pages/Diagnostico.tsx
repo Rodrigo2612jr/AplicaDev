@@ -101,22 +101,9 @@ function toDados(d: FD): LeadDados {
 
 const WA_NUMBER = '5588998030247'
 
-function buildLeadMsg(d: FD, rec: Rec, temperatura: string): string {
-  const recLabel: Record<Rec, string> = { site: 'um Site', sistema: 'um Sistema', app: 'um App' }
-  const lines = [
-    `Olá! Me chamo *${d.nome}*${d.nomeEmpresa ? ` (*${d.nomeEmpresa}*)` : ''}.`,
-    ``,
-    `Acabei de fazer o diagnóstico gratuito no site da AplicaDev e quero ver como destravar meu negócio.`,
-    ``,
-    `• Ramo: ${d.nicho || '-'}`,
-    `• Atendo: ${d.clientesMes || '-'} clientes/mês`,
-    `• O que faz mais sentido pra mim: ${recLabel[rec]}`,
-    ``,
-    `Fico no aguardo! 🙏`,
-    ``,
-    `_[interno ${temperatura}]_`,
-  ]
-  return encodeURIComponent(lines.join('\n'))
+function buildLeadMsg(d: FD): string {
+  const empresa = d.nomeEmpresa ? `, da *${d.nomeEmpresa}*` : ''
+  return encodeURIComponent(`Olá! Me chamo *${d.nome}*${empresa}. Acabei de fazer o diagnóstico no site de vocês 👋`)
 }
 
 /** Dispara evento de conversão de forma DEFENSIVA (não quebra sem pixel). */
@@ -282,7 +269,7 @@ export default function Diagnostico() {
   const { cur, tot } = progress(step)
   const pct = step === 'done' ? 100 : step === 'intro' ? 0 : Math.round((cur / tot) * 100)
   const travas = step === 'done' ? generateTravas(toDados(data)) : []
-  const waUrl = `https://wa.me/${WA_NUMBER}?text=${buildLeadMsg(data, finalRec.current, finalTemp.current)}`
+  const waUrl = `https://wa.me/${WA_NUMBER}?text=${buildLeadMsg(data)}`
 
   const nextLabel = step === 'intro' ? 'Começar meu diagnóstico →'
     : step === 'contato' ? 'Continuar →'
