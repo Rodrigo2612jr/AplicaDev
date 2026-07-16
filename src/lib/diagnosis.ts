@@ -9,8 +9,13 @@ import type { Lead, LeadDados, Rec, Temperatura } from './db'
 
 /* ── Midpoints pra transformar faixa → número estimado ──────────────── */
 const CLIENTES_MID: Record<string, number> = {
+  // faixas novas: clientes por DIA → estimativa mensal (~26 dias)
+  'd-ate-5': 80, 'd-5-15': 260, 'd-15-40': 650, 'd-40-100': 1700, 'd-100+': 3900,
+  // legado (form antigo perguntava por mês)
   'ate-20': 12, '20-50': 35, '50-100': 75, '100+': 140, 'nao-sei': 0,
 }
+/** Volume que já justifica sistema/app (≥ ~250 clientes/mês). */
+const isVolumeAlto = (d: LeadDados) => (CLIENTES_MID[d.clientesMes] ?? 0) >= 250
 const TICKET_MID: Record<string, number> = {
   'ate-50': 35, '50-150': 100, '150-500': 300, '500-2k': 1000, '2k+': 3000,
 }
@@ -64,13 +69,13 @@ export function recommend(d: LeadDados): Rec {
   if (isBaseFragil(d)) sistema += 2
   if (isRecorrenciaFraca(d)) sistema += 1
   if (isDonoGargalo(d)) sistema += 2
-  if (d.clientesMes === '50-100' || d.clientesMes === '100+') sistema += 2
+  if (isVolumeAlto(d)) sistema += 2
   if (estimarFaturamentoMensal(d) >= 15000) sistema += 1
 
   // App: nichos de agendamento/fidelização
   const nicho = (d.nicho || '').toLowerCase()
   if (APP_NICHES.some(k => nicho.includes(k))) app += 4
-  if (isAgendaManual(d) && (d.clientesMes === '100+' || d.clientesMes === '50-100')) app += 2
+  if (isAgendaManual(d) && isVolumeAlto(d)) app += 2
   if (d.empresaTipo === 'prestador' || d.empresaTipo === 'clinica') app += 1
 
   if (sistema >= site && sistema >= app && sistema > 0) return 'sistema'
@@ -190,7 +195,11 @@ const TIPO_LABEL: Record<string, string> = {
   restaurante: 'restaurante / food', clinica: 'clínica / saúde / beleza', b2b: 'empresa B2B', outro: 'negócio',
 }
 const CLIENTES_LABEL: Record<string, string> = {
-  'ate-20': 'até 20', '20-50': '20-50', '50-100': '50-100', '100+': '100+', 'nao-sei': '? (não sabe)',
+  'd-ate-5': 'até 5 clientes/dia (~80/mês)', 'd-5-15': '5-15 clientes/dia (~260/mês)',
+  'd-15-40': '15-40 clientes/dia (~650/mês)', 'd-40-100': '40-100 clientes/dia (~1.700/mês)',
+  'd-100+': '+100 clientes/dia (~3.900/mês)',
+  'ate-20': 'até 20 clientes/mês', '20-50': '20-50 clientes/mês', '50-100': '50-100 clientes/mês',
+  '100+': '100+ clientes/mês', 'nao-sei': '? clientes (não sabe)',
 }
 const TICKET_LABEL: Record<string, string> = {
   'ate-50': 'até R$50', '50-150': 'R$50-150', '150-500': 'R$150-500', '500-2k': 'R$500-2mil', '2k+': 'acima de R$2mil',
@@ -231,7 +240,7 @@ export function generateDiagnosis(lead: Lead): Diagnosis {
   const tMid = TICKET_MID[d.ticketMedio] ?? 0
 
   /* ── Situação ── */
-  situacao.push(`${lead.nome_empresa || lead.nome} — ${TIPO_LABEL[d.empresaTipo] || d.empresaTipo || 'negócio'}${d.nicho ? ` (${d.nicho})` : ''}, ${CLIENTES_LABEL[d.clientesMes] ?? '?'} clientes/mês, ticket ${TICKET_LABEL[d.ticketMedio] ?? '?'}`)
+  situacao.push(`${lead.nome_empresa || lead.nome} — ${TIPO_LABEL[d.empresaTipo] || d.empresaTipo || 'negócio'}${d.nicho ? ` (${d.nicho})` : ''}, ${CLIENTES_LABEL[d.clientesMes] ?? '? clientes'}, ticket ${TICKET_LABEL[d.ticketMedio] ?? '?'}`)
   if (fat > 0) situacao.push(`Faturamento estimado: ~${brl(fat)}/mês (ticket × volume)`)
   if (d.canais?.length) situacao.push(`Aquisição: ${d.canais.join(', ')}`)
   if (d.googleResultado) situacao.push(`No Google aparece: ${GOOGLE_LABEL[d.googleResultado] ?? d.googleResultado}`)
@@ -271,7 +280,7 @@ export function generateDiagnosis(lead: Lead): Diagnosis {
   if (isFinanceiroCego(d)) oportunidades.push('Painel de vendas/financeiro em tempo real — parar de decidir no escuro')
   if (isRecorrenciaFraca(d) || isBaseFragil(d)) oportunidades.push('CRM próprio + automação de reativação da base (ativar o LTV parado)')
   if (isDonoGargalo(d)) oportunidades.push('Sistema que tira o processo da cabeça do dono — a equipe roda sem depender dele')
-  if (fat >= 50000 || d.clientesMes === '100+') oportunidades.push('Volume/faturamento alto: cabe solução completa (combo site + sistema/app), ROI rápido')
+  if (fat >= 50000 || (CLIENTES_MID[d.clientesMes] ?? 0) >= 1700) oportunidades.push('Volume/faturamento alto: cabe solução completa (combo site + sistema/app), ROI rápido')
 
   /* ── Proposta ── */
   let servico = '', prazo = '', valor = ''

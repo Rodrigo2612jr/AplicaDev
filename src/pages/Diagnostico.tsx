@@ -350,12 +350,13 @@ export default function Diagnostico() {
             <div className="diag-step">
               <StepHead emoji="📊" title="Seu negócio em números" sub="Nada de conta difícil, só o que você já sabe de cabeça." />
               <div className="diag-section">
-                <Q label="Quantos clientes você atende num mês normal?">
+                <Q label="Quantos clientes você atende num dia normal?">
                   <div className="diag-opts-row">
-                    <Opt label="Até 20" selected={data.clientesMes === 'ate-20'} onClick={() => set('clientesMes', 'ate-20')} />
-                    <Opt label="20 a 50" selected={data.clientesMes === '20-50'} onClick={() => set('clientesMes', '20-50')} />
-                    <Opt label="50 a 100" selected={data.clientesMes === '50-100'} onClick={() => set('clientesMes', '50-100')} />
-                    <Opt label="Mais de 100" selected={data.clientesMes === '100+'} onClick={() => set('clientesMes', '100+')} />
+                    <Opt label="Até 5 por dia" selected={data.clientesMes === 'd-ate-5'} onClick={() => set('clientesMes', 'd-ate-5')} />
+                    <Opt label="5 a 15 por dia" selected={data.clientesMes === 'd-5-15'} onClick={() => set('clientesMes', 'd-5-15')} />
+                    <Opt label="15 a 40 por dia" selected={data.clientesMes === 'd-15-40'} onClick={() => set('clientesMes', 'd-15-40')} />
+                    <Opt label="40 a 100 por dia" selected={data.clientesMes === 'd-40-100'} onClick={() => set('clientesMes', 'd-40-100')} />
+                    <Opt label="Mais de 100 por dia" selected={data.clientesMes === 'd-100+'} onClick={() => set('clientesMes', 'd-100+')} />
                     <Opt label="Não sei dizer" selected={data.clientesMes === 'nao-sei'} onClick={() => set('clientesMes', 'nao-sei')} />
                   </div>
                 </Q>
