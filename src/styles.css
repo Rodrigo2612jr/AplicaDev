@@ -1486,6 +1486,52 @@ ul { list-style: none; }
 }
 .diag-result__note strong { color: var(--text-2); }
 
+/* ── DIAG INTRO (tela de abertura, message-match com o anúncio) ── */
+.diag-intro { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px; padding: 8px 0; }
+.diag-intro__badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; color: var(--brand);
+  background: var(--brand-xlight); border: 1px solid var(--border-hi);
+  padding: 6px 14px; border-radius: var(--r-full);
+}
+.diag-intro__badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 4px var(--brand-glow); }
+.diag-intro__title {
+  font-family: var(--font-head); font-weight: 800;
+  font-size: clamp(24px, 5vw, 34px); line-height: 1.18; color: var(--text);
+  max-width: 520px; letter-spacing: -.02em;
+}
+.diag-intro__title .grad {
+  background: linear-gradient(90deg, var(--brand), #2dd4bf);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.diag-intro__sub { font-size: 15px; color: var(--text-2); line-height: 1.7; max-width: 460px; }
+.diag-intro__sub strong { color: var(--text); }
+.diag-intro__proof {
+  font-size: 13px; color: var(--text-2); line-height: 1.6;
+  background: var(--bg-alt); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 14px 18px; max-width: 460px;
+}
+.diag-hint { color: var(--text-muted); font-weight: 400; }
+
+/* ── MINI-DIAGNÓSTICO (travas nomeadas na tela final) ── */
+.diag-travas { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 480px; }
+.diag-trava {
+  display: flex; gap: 14px; text-align: left;
+  background: #fff; border: 1px solid var(--border);
+  border-left: 3px solid var(--brand); border-radius: var(--r-lg);
+  padding: 14px 16px; box-shadow: var(--shadow-xs);
+}
+.diag-trava__num {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--brand-xlight); color: var(--brand);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; font-family: var(--font-head);
+}
+.diag-trava__body { display: flex; flex-direction: column; gap: 3px; }
+.diag-trava__title { font-size: 14.5px; font-weight: 700; color: var(--text); line-height: 1.35; }
+.diag-trava__desc { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+.diag-result__cta-copy { font-size: 14px; color: var(--text-2); line-height: 1.65; }
+
 /* ── ADMIN PANEL ──────────────────────────────────────────────── */
 .admin-page {
   min-height: 100vh; background: var(--bg-dark);
@@ -1707,6 +1753,22 @@ ul { list-style: none; }
   padding: 2px 8px; border-radius: 6px;
   border: 1px solid; white-space: nowrap;
 }
+.admin-card__temp {
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: var(--r-full);
+  border: 1px solid; white-space: nowrap;
+}
+.admin-card__parcial {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+  color: #f59e0b; background: rgba(245,158,11,.12);
+  border: 1px solid rgba(245,158,11,.35); border-radius: 6px;
+  padding: 2px 7px; white-space: nowrap;
+}
+.admin-origem {
+  font-size: 12px; color: rgba(255,255,255,.55);
+  background: rgba(26,183,171,.08); border: 1px solid rgba(26,183,171,.2);
+  border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;
+}
 
 .admin-diag-section {
   padding: 14px 16px; border-radius: 10px;
@@ -1729,6 +1791,8 @@ ul { list-style: none; }
 .admin-diag-section.opportunity { border-left-color: rgba(26,183,171,.5); }
 .admin-diag-section.proposal { border-left-color: rgba(124,58,237,.5); background: rgba(124,58,237,.04); }
 .admin-diag-section.approach { border-left-color: rgba(245,158,11,.5); }
+.admin-diag-section.cost { border-left-color: rgba(52,211,153,.6); background: rgba(52,211,153,.05); }
+.admin-diag-section.cost h3 { color: #34d399; }
 .admin-diag-list {
   list-style: none; padding: 0; margin: 0;
   display: flex; flex-direction: column; gap: 5px;
