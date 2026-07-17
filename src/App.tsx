@@ -767,7 +767,7 @@ const PLANS = [
     emoji: '⚙️',
     name: 'Sistema',
     who: 'Pra quem tem um sistema rodando o negócio',
-    monthly: 249.9,
+    monthly: 199.9,
     features: [
       'Banco de dados com backup todo dia',
       'Qualquer bug corrigido sem custo extra',
@@ -781,7 +781,7 @@ const PLANS = [
     emoji: '🤖',
     name: 'Operação',
     who: 'Pra quem quer a operação toda automatizada',
-    monthly: 399.9,
+    monthly: 349.9,
     features: [
       'Tudo do Sistema',
       'Bot de WhatsApp atendendo por você',
