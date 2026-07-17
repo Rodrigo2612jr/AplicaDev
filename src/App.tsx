@@ -739,7 +739,7 @@ const PLANS = [
     emoji: '🎯',
     name: 'Captação',
     who: 'Pra quem tem página de captação no ar',
-    monthly: 59.9,
+    monthly: 69.9,
     features: [
       'Hospedagem premium + domínio renovado',
       'Página e formulário vigiados 24/7',
