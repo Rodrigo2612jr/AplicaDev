@@ -10,7 +10,7 @@ import { generateDiagnosis, classifyLead, estimarFaturamentoMensal } from './dia
 const INGEST_URL = import.meta.env.VITE_KANBAN_INGEST_URL as string | undefined
 
 export interface KanbanAnswer { section: string; key: string; label: string; value: string }
-export interface KanbanPayload { formType: string; contactName?: string; softwareName?: string; answers: KanbanAnswer[] }
+export interface KanbanPayload { formType: string; contactName?: string; softwareName?: string; phone?: string; answers: KanbanAnswer[] }
 
 /* labels legíveis pros valores em faixa/slug (o inbox mostra texto, não código) */
 const ORC: Record<string, string> = { 'ate-1k': 'a partir de R$999', '1-3k': 'R$1-3 mil', '3-10k': 'R$3-10 mil', '10k+': 'acima de R$10 mil', 'so-entender': 'só quer entender primeiro' }
@@ -117,7 +117,9 @@ export function buildKanbanPayload(input: {
   // Formulário na íntegra (cada pergunta com a opção exata que o lead clicou)
   answers.push(...buildRawAnswers(dados))
 
-  return { formType: 'diagnostico-v1', contactName: nome?.trim() || undefined, answers }
+  // phone: liga o lead ao WhatsApp do sistema (contato nasce pré-qualificado,
+  // pula o bot e não duplica card no funil quando ele chamar)
+  return { formType: 'diagnostico-v1', contactName: nome?.trim() || undefined, phone: whatsapp?.trim() || undefined, answers }
 }
 
 /** POST defensivo pro Convex do Kanban. No-op silencioso se a URL não estiver setada. */
