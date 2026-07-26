@@ -149,16 +149,19 @@ function ParticleCanvas() {
 
 const HERO_WORDS = ['Site', 'Aplicativo', 'Sistema', 'Produto Digital']
 
+// Só entra aqui o que é verificável: compromisso escrito na proposta ou
+// recurso que roda de fato no nosso sistema. Número de resultado de cliente
+// não entra sem medição e autorização.
 const MARQUEE_ITEMS = [
-  '⚡ Entrega garantida em até 10 dias',
-  '★ +240% de engajamento para EdTech',
-  '★ +340% de conversão para E-commerce',
-  '★ Sistema que se pagou em 30 dias',
-  '★ 8× mais velocidade operacional',
-  '★ +R$450k por mês em receita extra',
-  '★ 70% menos erros nos processos',
-  '★ 98% de satisfação dos clientes',
-  '★ 150+ projetos entregues no prazo',
+  '⚡ Do briefing ao ar em 7 a 10 dias úteis',
+  '★ Escopo, prazo e preço fechados antes de começar',
+  '★ Seu site checado automaticamente a cada 10 minutos',
+  '★ Backup diário criptografado',
+  '★ Relatório do seu site todo mês no WhatsApp',
+  '★ Sem fidelidade, cancele quando quiser',
+  '★ Preço travado por 12 meses',
+  '★ Suporte com resposta em até 12h úteis',
+  '★ Painel pra acompanhar cada entrega em tempo real',
   '⚡ A partir de R$999,90',
 ]
 
@@ -258,33 +261,35 @@ const DIFFERENTIALS = [
   },
 ]
 
-const TESTIMONIALS = [
+/**
+ * Compromissos, não depoimentos. Cada item aqui é cobrável: ou está escrito
+ * na proposta, ou é um serviço que roda no nosso sistema. Depoimento só volta
+ * pra cá com cliente real, nome autorizado e resultado medido.
+ */
+const COMMITMENTS = [
   {
-    stars: 5,
-    text: 'A AplicaDev entregou nosso sistema de gestão em menos de 2 semanas. Economizamos 40h por mês em processos manuais logo na primeira semana de uso.',
-    name: 'Carlos Mendes',
-    role: 'CEO',
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-    result: '+40h/mês',
-    resultLabel: 'economizadas',
+    icon: '⚡',
+    text: 'Você aprova escopo, prazo e valor antes da gente escrever a primeira linha de código. Projeto maior tem prazo combinado antes de iniciar, nunca descoberto no meio do caminho.',
+    name: 'Prazo e preço fechados',
+    role: 'Definido na proposta',
+    result: '7 a 10',
+    resultLabel: 'dias úteis',
   },
   {
-    stars: 5,
-    text: 'Nossa landing page dobrou a taxa de conversão em 45 dias. O design é premium e a velocidade de carregamento é incrível. Superou todas as expectativas.',
-    name: 'Ana Carvalho',
-    role: 'CMO',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    result: '+240%',
-    resultLabel: 'de conversão',
+    icon: '🛡️',
+    text: 'Seu site é checado automaticamente a cada 10 minutos. Se sair do ar, a gente descobre antes de você, e o backup do dia já está guardado e criptografado.',
+    name: 'Site vigiado 24/7',
+    role: 'Roda no nosso sistema',
+    result: '10',
+    resultLabel: 'minutos',
   },
   {
-    stars: 5,
-    text: 'Tinham nos cotado R$18.000 em outra agência pelo mesmo app. A AplicaDev entregou em 10 dias, muito mais rápido e com uma qualidade absurda.',
-    name: 'Rafael Sousa',
-    role: 'Fundador',
-    avatar: 'https://randomuser.me/api/portraits/men/18.jpg',
-    result: '10 dias',
-    resultLabel: 'entregue',
+    icon: '🤝',
+    text: 'Plano mensal sem fidelidade: cancela quando quiser, sem multa. O preço fica travado por 12 meses e só reajusta pelo IPCA, uma vez ao ano.',
+    name: 'Sem amarra',
+    role: 'Escrito no plano',
+    result: '12',
+    resultLabel: 'meses de preço travado',
   },
 ]
 
@@ -351,7 +356,7 @@ function Navbar({ onCta }: { onCta: () => void }) {
           <a href="#servicos" onClick={e => { e.preventDefault(); scrollTo('servicos') }}>Serviços</a>
           <a href="#diferenciais" onClick={e => { e.preventDefault(); scrollTo('diferenciais') }}>Diferenciais</a>
           <a href="#processo" onClick={e => { e.preventDefault(); scrollTo('processo') }}>Como Funciona</a>
-          <a href="#depoimentos" onClick={e => { e.preventDefault(); scrollTo('depoimentos') }}>Depoimentos</a>
+          <a href="#depoimentos" onClick={e => { e.preventDefault(); scrollTo('depoimentos') }}>Compromissos</a>
           <a href="#faq" onClick={e => { e.preventDefault(); scrollTo('faq') }}>FAQ</a>
         </div>
 
@@ -385,7 +390,7 @@ function Navbar({ onCta }: { onCta: () => void }) {
               fontFamily: 'var(--font)', fontSize: '16px', fontWeight: '500',
               color: 'var(--text-2)', cursor: 'pointer', padding: '6px 0',
             }}>
-              {{ servicos: 'Serviços', diferenciais: 'Diferenciais', processo: 'Como Funciona', depoimentos: 'Depoimentos', faq: 'FAQ' }[id]}
+              {{ servicos: 'Serviços', diferenciais: 'Diferenciais', processo: 'Como Funciona', depoimentos: 'Compromissos', faq: 'FAQ' }[id]}
             </button>
           ))}
           <button className="btn-primary" onClick={() => { onCta(); setMobileOpen(false) }} style={{ width: '100%', justifyContent: 'center' }}>
@@ -453,18 +458,13 @@ function Hero({ onCta }: { onCta: () => void }) {
             </button>
           </div>
 
+          {/* Prova = compromisso que a gente controla. Os avatares antigos
+              vinham de um gerador de rostos fictícios e a contagem de
+              projetos não tinha lastro. */}
           <div className="hero__proof">
-            <div className="hero__proof-avatars">
-              {[
-                'https://randomuser.me/api/portraits/women/65.jpg',
-                'https://randomuser.me/api/portraits/men/45.jpg',
-                'https://randomuser.me/api/portraits/women/33.jpg',
-                'https://randomuser.me/api/portraits/men/22.jpg',
-              ].map((src, i) => <img key={i} src={src} alt="" className="hero__proof-avatar" />)}
-            </div>
             <div className="hero__proof-text">
-              <div className="hero__proof-stars">★★★★★</div>
-              <strong>+150 projetos</strong> entregues com sucesso
+              <div className="hero__proof-stars" aria-hidden="true">⚡</div>
+              <strong>Escopo e preço fechados</strong> antes de você aprovar. Sem surpresa no meio do caminho.
             </div>
           </div>
         </div>
@@ -496,10 +496,12 @@ function StatsStrip() {
   return (
     <section className="stats-strip">
       <div className="stats-strip__inner">
-        <StatItem target={150} suffix="+" label="Projetos entregues" detail="Sites, apps e sistemas" accent />
-        <StatItem target={98} suffix="%" label="Satisfação dos clientes" detail="NPS verificado" accent />
-        <StatItem target={10} suffix=" dias" label="Prazo de entrega" detail="Do briefing ao ar" />
+        {/* Todo número aqui é conferível: prazo e preço estão na proposta,
+            o monitoramento e o SLA rodam no nosso próprio sistema. */}
+        <StatItem target={10} suffix=" dias" label="Prazo de entrega" detail="Do briefing ao ar" accent />
         <StatItem target={999} suffix=",90" label="A partir de R$" detail="Investimento inicial" accent />
+        <StatItem target={10} suffix=" min" label="Checagem do seu site" detail="Automática, 24 horas por dia" />
+        <StatItem target={12} suffix="h" label="Resposta do suporte" detail="Prazo útil em contrato" accent />
       </div>
     </section>
   )
@@ -652,30 +654,30 @@ function Process() {
   )
 }
 
-/* ── TESTIMONIALS ───────────────────────────────────────────────── */
+/* ── COMPROMISSOS ───────────────────────────────────────────────── */
 
 function Testimonials() {
   return (
     <section className="testimonials" id="depoimentos">
       <div className="container">
         <div className="section-head" data-reveal>
-          <span className="tag">Depoimentos reais</span>
+          <span className="tag">Compromissos</span>
           <h2 className="section-title">
-            O que nossos clientes{' '}
-            <span className="gradient-text">falam</span>
+            O que a gente garante{' '}
+            <span className="gradient-text">por escrito</span>
           </h2>
           <p className="section-sub">
-            Resultados concretos para empresas que confiaram na AplicaDev para transformar suas operações digitais.
+            Em vez de depoimento que ninguém consegue conferir, aqui está exatamente
+            o que você pode cobrar da AplicaDev.
           </p>
         </div>
 
         <div className="testimonials__grid">
-          {TESTIMONIALS.map((t, i) => (
+          {COMMITMENTS.map((t, i) => (
             <div key={t.name} className="testi-card" data-reveal data-delay={String(i + 1)}>
-              <div className="testi-stars">{'★'.repeat(t.stars)}</div>
+              <div className="testi-stars" aria-hidden="true">{t.icon}</div>
               <p className="testi-text">{t.text}</p>
               <div className="testi-author">
-                <img src={t.avatar} alt={t.name} className="testi-avatar" />
                 <div>
                   <div className="testi-name">{t.name}</div>
                   <div className="testi-role">{t.role}</div>
@@ -924,7 +926,7 @@ function CTAFinal({ onCta }: { onCta: () => void }) {
           {' '}hoje
         </h2>
         <p className="cta-final__sub" data-reveal data-delay="2">
-          Diagnóstico gratuito, proposta no mesmo dia e entrega garantida em até 10 dias. Sem burocracia.
+          Diagnóstico gratuito, proposta com escopo e preço fechados e entrega em até 10 dias. Sem burocracia.
         </p>
         <div className="cta-final__actions" data-reveal data-delay="3">
           <button className="btn-primary" onClick={onCta}>
@@ -941,7 +943,7 @@ function CTAFinal({ onCta }: { onCta: () => void }) {
           <span>⚡ Entrega em até 10 dias</span>
           <span>💰 A partir de R$999,90</span>
           <span>🔒 Proposta sem compromisso</span>
-          <span>★ 98% de satisfação</span>
+          <span>★ Sem fidelidade</span>
         </div>
       </div>
     </section>
@@ -987,7 +989,7 @@ function Footer({ onCta }: { onCta: () => void }) {
             <div className="footer__links">
               <a href="#" onClick={e => { e.preventDefault(); scrollTo('diferenciais') }}>Por que nós</a>
               <a href="#" onClick={e => { e.preventDefault(); scrollTo('processo') }}>Como funciona</a>
-              <a href="#" onClick={e => { e.preventDefault(); scrollTo('depoimentos') }}>Clientes</a>
+              <a href="#" onClick={e => { e.preventDefault(); scrollTo('depoimentos') }}>Compromissos</a>
               <a href="#" onClick={e => { e.preventDefault(); onCta() }}>Contato</a>
             </div>
           </div>
