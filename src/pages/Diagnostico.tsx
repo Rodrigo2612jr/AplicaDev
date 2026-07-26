@@ -267,6 +267,10 @@ export default function Diagnostico() {
   const finalRec = useRef<Rec>('site')
   const finalTemp = useRef<string>('MORNO')
   const doneFired = useRef(false)
+  // o Lead é o evento que a campanha otimiza — não pode contar duas vezes.
+  // Sem isto, voltar do filtro pro contato e avançar de novo dispara de novo,
+  // inflando a conversão e ensinando o algoritmo errado.
+  const leadFired = useRef(false)
 
   // captura a atribuição do anúncio uma vez (o PageView já vem do pixel base)
   useEffect(() => {
@@ -328,19 +332,25 @@ export default function Diagnostico() {
     }
     // salva parcial ao sair do contato (rede de segurança antes do filtro)
     if (step === 'contato') {
+      // O evento sai ANTES do await de propósito: o insert leva 200-800ms em
+      // 4G, e se a pessoa fecha a aba nessa janela o sinal se perde — logo no
+      // evento que a campanha usa pra otimizar. O banco continua igual.
+      if (!leadFired.current) {
+        leadFired.current = true
+        // identifica ANTES do evento (Advanced Matching)
+        identificar(data.nome, data.whatsapp, leadId.current)
+        // ← EVENTO DE OTIMIZAÇÃO DA CAMPANHA. Fica aqui, não no done:
+        //   é o único ponto do funil com volume pra alimentar o algoritmo.
+        fireEvent('Lead', {
+          value: 999.9,
+          currency: 'BRL',
+          content_name: utm.current.utm_content ?? '',
+        }, `ld_${leadId.current}`)
+      }
       setSaving(true)
       const { error } = await persist('parcial')
       setSaving(false)
       if (error) console.error('[Diagnostico] parcial:', error)
-      // identifica ANTES do evento (Advanced Matching)
-      identificar(data.nome, data.whatsapp, leadId.current)
-      // ← EVENTO DE OTIMIZAÇÃO DA CAMPANHA. Fica aqui, não no done:
-      //   é o único ponto do funil com volume pra alimentar o algoritmo.
-      fireEvent('Lead', {
-        value: 999.9,
-        currency: 'BRL',
-        content_name: utm.current.utm_content ?? '',
-      }, `ld_${leadId.current}`)
     }
     // salva completo ao sair do filtro
     if (step === 'filtro') {

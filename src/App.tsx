@@ -1078,6 +1078,12 @@ export default function App() {
       <Route path="/admin" element={<Admin />} />
       <Route path="/login" element={<Login />} />
       <Route path="/privacidade" element={<Privacidade />} />
+      {/* Rede de segurança: sem isto, qualquer rota não reconhecida renderiza
+          null — tela branca. Vale para link truncado no WhatsApp, in-app
+          browser do Instagram, URL digitada errada e, principalmente, para o
+          caso de a Meta grudar os url_tags dentro do fragmento. Tráfego pago
+          batendo em tela branca é o pior desperdício possível. */}
+      <Route path="*" element={<Diagnostico />} />
     </Routes>
   )
 }
