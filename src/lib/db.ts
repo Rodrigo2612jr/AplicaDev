@@ -216,12 +216,38 @@ export function sanitizeLead(input: LeadUpsert): LeadUpsert {
  */
 export async function upsertLead(input: LeadUpsert): Promise<{ error: string | null }> {
   const clean = sanitizeLead(input)
-  const { error } = await supabase.from('leads').upsert(clean, { onConflict: 'id' })
-  if (error) {
-    console.error('[db] upsertLead error:', error.message)
-    return { error: error.message }
+
+  // NÃO usar .upsert() aqui.
+  //
+  // upsert vira "INSERT ... ON CONFLICT DO UPDATE", e o Postgres precisa
+  // enxergar a linha em conflito pra decidir. O anon não tem policy de
+  // SELECT (só `auth_select`, para authenticated), então TODO upsert morria
+  // com "new row violates row-level security policy" e nenhum lead era
+  // gravado. Verificado com o próprio supabase-js contra o banco real.
+  //
+  // A saída NÃO é abrir SELECT pro anon: a chave publishable vai no bundle
+  // do site, então isso deixaria qualquer visitante ler a base inteira de
+  // leads. Em vez disso, seguimos as policies que já existem:
+  //   anon_insert          -> insert liberado
+  //   anon_update_parcial  -> update só enquanto a linha está 'parcial'
+  //
+  // Fluxo: tenta INSERT; se a linha já existe (23505 = unique_violation),
+  // cai pro UPDATE por id. Idempotente do mesmo jeito que o upsert era.
+  const { error: insErr } = await supabase.from('leads').insert(clean)
+  if (!insErr) return { error: null }
+
+  if (insErr.code === '23505') {
+    const { id, ...campos } = clean
+    const { error: updErr } = await supabase.from('leads').update(campos).eq('id', id)
+    if (updErr) {
+      console.error('[db] upsertLead update error:', updErr.message)
+      return { error: updErr.message }
+    }
+    return { error: null }
   }
-  return { error: null }
+
+  console.error('[db] upsertLead insert error:', insErr.message)
+  return { error: insErr.message }
 }
 
 export async function fetchLeads(): Promise<{ data: Lead[]; error: string | null }> {
