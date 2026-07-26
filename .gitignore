@@ -16,3 +16,9 @@ skills-lock.json
 
 # TypeScript build cache
 *.tsbuildinfo
+
+# ops/meta (Marketing API)
+__pycache__/
+*.pyc
+.env.meta
+*.env.meta

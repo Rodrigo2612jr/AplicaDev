@@ -24,8 +24,45 @@ const TEMP_INFO: Record<Temperatura, { label: string; color: string; emoji: stri
 function utmSummary(lead: Lead): string {
   const u = lead.utm
   if (!u) return ''
-  const parts = [u.utm_source, u.utm_campaign, u.utm_content].filter(Boolean)
+  const parts = [u.utm_source, u.utm_campaign, u.utm_term, u.utm_content, u.plc].filter(Boolean)
   return parts.join(' · ')
+}
+
+/** Rótulo do criativo que trouxe o lead (utm_content = {{ad.name}}). */
+const ORGANICO = '— orgânico / direto'
+function criativoDe(lead: Lead): string {
+  return lead.utm?.utm_content || ORGANICO
+}
+
+export interface CriativoStat {
+  criativo: string
+  total: number
+  completos: number
+  QUENTE: number
+  MORNO: number
+  FRIO: number
+  pctQuente: number
+}
+
+/**
+ * Agrupa leads por criativo. É o relatório que o Gerenciador de Anúncios NÃO
+ * dá: ele sabe qual criativo gera lead barato, só aqui dá pra ver qual gera
+ * lead QUENTE — que é o que vira venda.
+ */
+export function statsPorCriativo(leads: Lead[], tempDe: (l: Lead) => Temperatura): CriativoStat[] {
+  const mapa = new Map<string, CriativoStat>()
+  for (const l of leads) {
+    const criativo = criativoDe(l)
+    const cur = mapa.get(criativo) ?? { criativo, total: 0, completos: 0, QUENTE: 0, MORNO: 0, FRIO: 0, pctQuente: 0 }
+    cur.total++
+    if (l.status === 'completo') cur.completos++
+    cur[tempDe(l)]++
+    mapa.set(criativo, cur)
+  }
+  const out = [...mapa.values()]
+  for (const c of out) c.pctQuente = c.total ? Math.round((c.QUENTE / c.total) * 100) : 0
+  // quem traz mais QUENTE primeiro; empate desempata por volume
+  return out.sort((a, b) => b.QUENTE - a.QUENTE || b.total - a.total)
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -37,6 +74,7 @@ export default function Admin() {
   const [expanded, setExpanded] = useState<string | null>(null)
   const [recFilter, setRecFilter] = useState<Rec | 'all'>('all')
   const [tempFilter, setTempFilter] = useState<Temperatura | 'all'>('all')
+  const [criativoFilter, setCriativoFilter] = useState<string>('all')
   const [loadError, setLoadError] = useState('')
   const [authChecked, setAuthChecked] = useState(false)
 
@@ -55,14 +93,18 @@ export default function Admin() {
     })
   }, [authChecked])
 
+  const tempDe = (l: Lead): Temperatura => l.temperatura ?? generateDiagnosis(l).temperatura
+
   const filtered = leads.filter(l => {
     if (recFilter !== 'all' && l.rec !== recFilter) return false
-    if (tempFilter !== 'all') {
-      const t = l.temperatura ?? generateDiagnosis(l).temperatura
-      if (t !== tempFilter) return false
-    }
+    if (tempFilter !== 'all' && tempDe(l) !== tempFilter) return false
+    if (criativoFilter !== 'all' && criativoDe(l) !== criativoFilter) return false
     return true
   })
+
+  const criativos = statsPorCriativo(leads, tempDe)
+  // só vale mostrar o quadro quando existe mais de uma origem pra comparar
+  const mostrarCriativos = criativos.length > 1 || (criativos.length === 1 && criativos[0].criativo !== ORGANICO)
 
   const handleDelete = async (id: string) => {
     if (!confirm('Remover este lead?')) return
@@ -118,6 +160,51 @@ export default function Admin() {
           ))}
         </div>
       </div>
+
+      {mostrarCriativos && (
+        <div className="admin-criativos">
+          <h2 className="admin-criativos__title">
+            🎬 Desempenho por criativo
+            <span className="admin-criativos__hint">ordenado por quem traz mais QUENTE — não por quem traz mais lead</span>
+          </h2>
+          <div className="admin-criativos__grid">
+            {criativos.map(c => {
+              const ativo = criativoFilter === c.criativo
+              return (
+                <button
+                  key={c.criativo}
+                  className={`admin-criativo${ativo ? ' active' : ''}`}
+                  onClick={() => setCriativoFilter(ativo ? 'all' : c.criativo)}
+                  title="Clique para filtrar a lista por este criativo"
+                >
+                  <span className="admin-criativo__nome">{c.criativo}</span>
+                  <span className="admin-criativo__bar">
+                    {(['QUENTE', 'MORNO', 'FRIO'] as const).map(t => (
+                      c[t] > 0 && (
+                        <span
+                          key={t}
+                          style={{ width: `${(c[t] / c.total) * 100}%`, background: TEMP_INFO[t].color }}
+                          title={`${TEMP_INFO[t].label}: ${c[t]}`}
+                        />
+                      )
+                    ))}
+                  </span>
+                  <span className="admin-criativo__nums">
+                    <strong style={{ color: TEMP_INFO.QUENTE.color }}>{c.QUENTE} quente{c.QUENTE !== 1 ? 's' : ''}</strong>
+                    <span>{c.pctQuente}% de {c.total}</span>
+                    <span>{c.completos} completo{c.completos !== 1 ? 's' : ''}</span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+          {criativoFilter !== 'all' && (
+            <button className="admin-criativos__clear" onClick={() => setCriativoFilter('all')}>
+              ✕ limpar filtro de criativo
+            </button>
+          )}
+        </div>
+      )}
 
       {loadError && <div className="admin-error">Erro ao carregar leads: {loadError}</div>}
 

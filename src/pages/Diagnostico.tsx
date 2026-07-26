@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import logoIcon from '../assets/logo-icon-clean.png'
-import { upsertLead } from '../lib/db'
+import { upsertLead, URL_ATTR_KEYS } from '../lib/db'
 import type { LeadDados, UtmDados, Rec } from '../lib/db'
 import { recommend, classifyLead, generateTravas } from '../lib/diagnosis'
 import { buildKanbanPayload, pushLeadToKanban } from '../lib/kanban'
@@ -106,33 +106,109 @@ function buildLeadMsg(d: FD): string {
   return encodeURIComponent(`Olá! Me chamo *${d.nome}*${empresa}. Acabei de fazer o diagnóstico no site de vocês 👋`)
 }
 
-/** Dispara evento de conversão de forma DEFENSIVA (não quebra sem pixel). */
-function fireEvent(name: string, params: Record<string, unknown>) {
+/* ═══════════════════════════════════════════════════════════════
+   TRACKING
+   3 níveis de evento, de propósito:
+     DiagStart          — saiu da intro          (muito volume, sinal de topo)
+     Lead               — preencheu o contato    ← EVENTO DE OTIMIZAÇÃO
+     CompleteRegistration — terminou o filtro    (raro, métrica de negócio)
+   Com verba baixa a campanha precisa otimizar pelo evento do MEIO: só ele
+   junta os ~50 eventos/7 dias que tiram o conjunto da fase de aprendizado.
+═══════════════════════════════════════════════════════════════ */
+type EventoPixel = 'DiagStart' | 'Lead' | 'CompleteRegistration'
+
+/** Nome do evento no GA4/dataLayer (o Meta usa o nome padrão direto). */
+const EVENT_ALIAS: Record<EventoPixel, string> = {
+  DiagStart: 'diagnostico_iniciado',
+  Lead: 'generate_lead',
+  CompleteRegistration: 'diagnostico_completo',
+}
+
+/**
+ * Dispara evento de forma DEFENSIVA (não quebra sem pixel instalado).
+ * `eventID` é o mesmo que a Conversions API vai mandar do servidor —
+ * é ele que faz a Meta deduplicar em vez de contar a conversão duas vezes.
+ */
+function fireEvent(evento: EventoPixel, params: Record<string, unknown>, eventID?: string) {
   try {
     const w = window as unknown as {
       fbq?: (...a: unknown[]) => void
       gtag?: (...a: unknown[]) => void
       dataLayer?: unknown[]
     }
-    if (typeof w.fbq === 'function') w.fbq('track', name === 'lead' ? 'Lead' : 'ViewContent', params)
-    if (name === 'lead' && typeof w.gtag === 'function') w.gtag('event', 'generate_lead', params)
-    ;(w.dataLayer = w.dataLayer || []).push({ event: name === 'lead' ? 'lead_diagnostico' : 'view_diagnostico', ...params })
+    if (typeof w.fbq === 'function') {
+      w.fbq('track', evento, params, eventID ? { eventID } : undefined)
+    }
+    if (typeof w.gtag === 'function') w.gtag('event', EVENT_ALIAS[evento], params)
+    ;(w.dataLayer = w.dataLayer || []).push({ event: EVENT_ALIAS[evento], ...params })
   } catch { /* nunca quebrar o fluxo por causa de tracking */ }
 }
 
-function readUtms(): UtmDados {
+function readCookie(nome: string): string {
+  try {
+    const m = document.cookie.match(new RegExp('(^|;\\s*)' + nome + '=([^;]*)'))
+    return m ? decodeURIComponent(m[2]) : ''
+  } catch { return '' }
+}
+
+/**
+ * Advanced Matching: re-inicializa o pixel com os dados do lead ANTES de
+ * disparar o evento. A Meta usa isso pra casar a conversão com a pessoa real,
+ * o que melhora bastante a atribuição — e com verba curta todo sinal conta.
+ * O pixel normaliza e faz o hash no próprio browser; nada sai em texto puro.
+ */
+function identificar(nome: string, whatsapp: string, leadId: string) {
+  try {
+    const w = window as unknown as {
+      fbq?: (...a: unknown[]) => void
+      APLICADEV_PIXEL_ID?: string
+    }
+    if (typeof w.fbq !== 'function' || !w.APLICADEV_PIXEL_ID) return
+
+    // telefone: só dígitos, com DDI. 10-11 dígitos = número BR sem código do país.
+    let ph = (whatsapp || '').replace(/\D/g, '')
+    if (ph.length >= 10 && ph.length <= 11) ph = `55${ph}`
+
+    const partes = (nome || '').trim().toLowerCase().split(/\s+/).filter(Boolean)
+    const dados: Record<string, string> = { external_id: leadId }
+    if (ph.length >= 12) dados.ph = ph
+    if (partes[0]) dados.fn = partes[0]
+    if (partes.length > 1) dados.ln = partes[partes.length - 1]
+
+    w.fbq('init', w.APLICADEV_PIXEL_ID, dados)
+  } catch { /* nunca quebrar o fluxo por causa de tracking */ }
+}
+
+/**
+ * Lê a atribuição da URL do anúncio.
+ * O app usa HashRouter: a query pode chegar em location.search (?x#/rota)
+ * OU dentro do hash (#/rota?x). Lê dos dois pra não perder atribuição.
+ */
+function readUtms(leadId: string): UtmDados {
   const u: UtmDados = {}
   try {
-    // App usa HashRouter: a query pode chegar em location.search (?x#/rota)
-    // OU dentro do hash (#/rota?x). Lê dos dois pra não perder atribuição.
     const search = new URLSearchParams(window.location.search)
     const hash = window.location.hash
     const hashQuery = new URLSearchParams(hash.includes('?') ? hash.slice(hash.indexOf('?')) : '')
-    for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'] as const) {
+    for (const k of URL_ATTR_KEYS) {
       const v = search.get(k) || hashQuery.get(k)
       if (v) u[k] = v
     }
+
+    // _fbc/_fbp: o que a CAPI usa pra casar o lead com o clique.
+    // Se o cookie ainda não existe (pixel acabou de carregar), monta o _fbc
+    // a partir do fbclid no formato que a Meta espera: fb.1.<ts>.<fbclid>
+    const fbc = readCookie('_fbc')
+    u.fbc = fbc || (u.fbclid ? `fb.1.${Date.now()}.${u.fbclid}` : '')
+    u.fbp = readCookie('_fbp')
+
+    u.referrer = document.referrer || ''
+    u.landing = (window.location.pathname + window.location.hash).slice(0, 300)
+    // determinístico: o servidor reconstrói o mesmo id sem precisar de estado
+    u.event_id = `cr_${leadId}`
   } catch { /* ignore */ }
+  // remove vazios pra não poluir o jsonb
+  for (const k of Object.keys(u) as (keyof UtmDados)[]) if (!u[k]) delete u[k]
   return u
 }
 
@@ -192,23 +268,24 @@ export default function Diagnostico() {
   const finalTemp = useRef<string>('MORNO')
   const doneFired = useRef(false)
 
-  // captura UTMs + evento de início uma vez
+  // captura a atribuição do anúncio uma vez (o PageView já vem do pixel base)
   useEffect(() => {
-    utm.current = readUtms()
-    fireEvent('view', { page: 'diagnostico' })
+    utm.current = readUtms(leadId.current)
   }, [])
 
-  // dispara conversão ao chegar no done
+  // dispara a conversão de negócio ao chegar no done.
+  // eventID = o mesmo que a CAPI manda do servidor → a Meta deduplica.
   useEffect(() => {
     if (step === 'done' && !doneFired.current) {
       doneFired.current = true
-      fireEvent('lead', {
+      fireEvent('CompleteRegistration', {
         value: 999.9, // valor-piso do lead pro pixel (ROAS real é calculado na conversão de venda)
         currency: 'BRL',
         rec: finalRec.current,
         temperatura: finalTemp.current,
         orcamento: data.orcamento,
-      })
+        content_name: utm.current.utm_content ?? '',  // qual criativo trouxe
+      }, utm.current.event_id)
     }
   }, [step, data])
 
@@ -245,12 +322,25 @@ export default function Diagnostico() {
     if (!canAdvance(step, data)) {
       setShake(true); setTimeout(() => setShake(false), 500); return
     }
+    // sinal de topo: começou de fato a responder
+    if (step === 'intro') {
+      fireEvent('DiagStart', { content_name: utm.current.utm_content ?? '' })
+    }
     // salva parcial ao sair do contato (rede de segurança antes do filtro)
     if (step === 'contato') {
       setSaving(true)
       const { error } = await persist('parcial')
       setSaving(false)
       if (error) console.error('[Diagnostico] parcial:', error)
+      // identifica ANTES do evento (Advanced Matching)
+      identificar(data.nome, data.whatsapp, leadId.current)
+      // ← EVENTO DE OTIMIZAÇÃO DA CAMPANHA. Fica aqui, não no done:
+      //   é o único ponto do funil com volume pra alimentar o algoritmo.
+      fireEvent('Lead', {
+        value: 999.9,
+        currency: 'BRL',
+        content_name: utm.current.utm_content ?? '',
+      }, `ld_${leadId.current}`)
     }
     // salva completo ao sair do filtro
     if (step === 'filtro') {

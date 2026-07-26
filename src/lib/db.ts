@@ -54,15 +54,49 @@ export interface LeadDados {
   sistemaDescricao?: string
 }
 
+/**
+ * Atribuição do lead. Mora na coluna `utm` (jsonb), então campo novo aqui
+ * NÃO precisa de migração — só de deploy.
+ *
+ * As chaves curtas (plc/src/cid/gid/aid) são macros que a Meta expande no
+ * clique. Guardamos NOME e ID de propósito: o nome é legível no painel
+ * ("hook_dor_32s"), o id sobrevive a renomeação de anúncio.
+ */
 export interface UtmDados {
+  // padrão (nome legível — vem das macros {{campaign.name}} etc.)
   utm_source?: string
   utm_medium?: string
   utm_campaign?: string
-  utm_content?: string
-  utm_term?: string
+  utm_content?: string   // {{ad.name}}    → o CRIATIVO
+  utm_term?: string      // {{adset.name}} → o CONJUNTO
+  // click ids
   fbclid?: string
   gclid?: string
+  // granular da Meta
+  plc?: string           // {{placement}}         — feed / reels / stories...
+  src?: string           // {{site_source_name}}  — fb / ig / an / msg
+  cid?: string           // {{campaign.id}}
+  gid?: string           // {{adset.id}}
+  aid?: string           // {{ad.id}}
+  // sinais pra Conversions API (dedup + matching)
+  fbc?: string
+  fbp?: string
+  event_id?: string      // compartilhado entre pixel do browser e CAPI server-side
+  // contexto de chegada
+  referrer?: string
+  landing?: string
 }
+
+/** Chaves que chegam pela URL do anúncio. */
+export const URL_ATTR_KEYS = [
+  'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
+  'fbclid', 'gclid', 'plc', 'src', 'cid', 'gid', 'aid',
+] as const
+
+/** Tudo que persistimos em `utm` (URL + derivados no browser). */
+export const ATTR_KEYS = [
+  ...URL_ATTR_KEYS, 'fbc', 'fbp', 'event_id', 'referrer', 'landing',
+] as const
 
 export interface Lead {
   id: string
@@ -148,7 +182,7 @@ function sanitizeDados(d: LeadDados): LeadDados {
 function sanitizeUtm(u?: UtmDados): UtmDados {
   if (!u) return {}
   const out: UtmDados = {}
-  for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'] as const) {
+  for (const k of ATTR_KEYS) {
     if (u[k]) out[k] = s(u[k])
   }
   return out

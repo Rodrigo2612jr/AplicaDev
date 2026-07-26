@@ -10,7 +10,16 @@ import { generateDiagnosis, classifyLead, estimarFaturamentoMensal } from './dia
 const INGEST_URL = import.meta.env.VITE_KANBAN_INGEST_URL as string | undefined
 
 export interface KanbanAnswer { section: string; key: string; label: string; value: string }
-export interface KanbanPayload { formType: string; contactName?: string; softwareName?: string; phone?: string; answers: KanbanAnswer[] }
+export interface KanbanPayload {
+  formType: string
+  contactName?: string
+  softwareName?: string
+  phone?: string
+  answers: KanbanAnswer[]
+  /** Atribuição crua — o Convex usa pra disparar a Conversions API server-side.
+   *  Não é exibido no card; quem é exibido é a seção "Origem" dentro de answers. */
+  attrib?: UtmDados
+}
 
 /* labels legíveis pros valores em faixa/slug (o inbox mostra texto, não código) */
 const ORC: Record<string, string> = { 'ate-1k': 'a partir de R$999', '1-3k': 'R$1-3 mil', '3-10k': 'R$3-10 mil', '10k+': 'acima de R$10 mil', 'so-entender': 'só quer entender primeiro' }
@@ -110,16 +119,30 @@ export function buildKanbanPayload(input: {
   add('Diagnóstico', 'proposta', 'Proposta sugerida', `${diag.proposta.servico} — ${diag.proposta.prazo} — ${diag.proposta.valor}`)
   if (diag.abordagem.length) add('Diagnóstico', 'abordagem', 'Como abordar', diag.abordagem.join(' · '))
 
-  // Origem
-  const origem = [utm.utm_source, utm.utm_campaign, utm.utm_content].filter(Boolean).join(' · ')
-  add('Origem', 'origem', 'Origem (anúncio)', origem)
+  // Origem — granular, pra saber QUAL criativo e QUAL conjunto trouxe o lead
+  const temAnuncio = Boolean(utm.utm_source || utm.utm_content)
+  if (temAnuncio) {
+    add('Origem', 'criativo', '🎬 Criativo (anúncio)', utm.utm_content ?? '')
+    add('Origem', 'conjunto', '🎯 Conjunto', utm.utm_term ?? '')
+    add('Origem', 'campanha', '📣 Campanha', utm.utm_campaign ?? '')
+    add('Origem', 'canal', '📱 Canal', [utm.utm_source, utm.src, utm.plc].filter(Boolean).join(' · '))
+    add('Origem', 'ids', '🔖 IDs (campanha/conjunto/anúncio)', [utm.cid, utm.gid, utm.aid].filter(Boolean).join(' / '))
+  } else {
+    add('Origem', 'origem', 'Origem', utm.referrer ? `orgânico · veio de ${utm.referrer}` : 'direto / orgânico')
+  }
 
   // Formulário na íntegra (cada pergunta com a opção exata que o lead clicou)
   answers.push(...buildRawAnswers(dados))
 
   // phone: liga o lead ao WhatsApp do sistema (contato nasce pré-qualificado,
   // pula o bot e não duplica card no funil quando ele chamar)
-  return { formType: 'diagnostico-v1', contactName: nome?.trim() || undefined, phone: whatsapp?.trim() || undefined, answers }
+  return {
+    formType: 'diagnostico-v1',
+    contactName: nome?.trim() || undefined,
+    phone: whatsapp?.trim() || undefined,
+    answers,
+    attrib: utm,
+  }
 }
 
 /** POST defensivo pro Convex do Kanban. No-op silencioso se a URL não estiver setada. */

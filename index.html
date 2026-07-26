@@ -15,27 +15,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
     <!-- ═══════════════════════════════════════════════════════════════
-         PIXEL META — PRONTO PRA ATIVAR
-         1. Crie a BM da AplicaDev + pixel no Events Manager
-         2. Troque SEU_PIXEL_ID_AQUI pelo ID do pixel (só números)
-         3. Descomente o bloco abaixo (remova <!- - e - ->) e faça deploy
-         O /diagnostico já dispara ViewContent (início) e Lead (conversão)
-         automaticamente assim que o fbq existir — nada mais a fazer.
+         PIXEL META — ATIVO (pixel "Pixel AplicaDev", conta act_2537568313380304)
+         O /diagnostico dispara, nesta ordem:
+           DiagStart            — saiu da intro
+           Lead                 — preencheu o contato  ← evento de OTIMIZAÇÃO
+           CompleteRegistration — terminou o filtro    (com eventID p/ dedup CAPI)
+         Advanced Matching: o form chama fbq('init', ID, {ph, fn}) antes do Lead,
+         então a Meta casa o lead com a pessoa real (o pixel hasheia no browser).
     ═══════════════════════════════════════════════════════════════ -->
-    <!--
     <script>
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
       n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
       t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
       document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', 'SEU_PIXEL_ID_AQUI');
+      window.APLICADEV_PIXEL_ID = '920081157051769';
+      fbq('init', window.APLICADEV_PIXEL_ID);
       fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=SEU_PIXEL_ID_AQUI&ev=PageView&noscript=1"
+      src="https://www.facebook.com/tr?id=920081157051769&ev=PageView&noscript=1"
     /></noscript>
-    -->
 
     <script type="module" src="/src/main.tsx"></script>
   </head>
