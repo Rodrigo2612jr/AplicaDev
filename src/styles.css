@@ -335,15 +335,23 @@ ul { list-style: none; }
   background: var(--bg);
 }
 
+/* Fundo do hero: é o LCP da página. O original era um PNG de 5504x3072 e
+   8,64 MB — ~17s em 4G, e o tráfego vem de Reels no celular. Agora são dois
+   WebP (93 KB no celular, 186 KB no desktop) escolhidos por media query.
+   As URLs chegam como CSS vars porque o Vite gera o hash do arquivo. */
 .hero__bg-photo {
   position: absolute;
   inset: 0;
+  background-image: var(--hero-sm);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.2;
   pointer-events: none;
   z-index: 1;
+}
+@media (min-width: 900px) {
+  .hero__bg-photo { background-image: var(--hero-lg); }
 }
 
 .hero__bg-mesh {

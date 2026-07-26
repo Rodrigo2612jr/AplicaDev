@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import './styles.css'
 import logoIcon from './assets/logo-icon-clean.png'
-import heroBg from './assets/hero-bg.png'
+import heroBgSm from './assets/hero-bg-sm.webp'
+import heroBgLg from './assets/hero-bg-lg.webp'
 import Diagnostico from './pages/Diagnostico'
 import Admin from './pages/Admin'
 import Login from './pages/Login'
@@ -414,7 +415,14 @@ function Hero({ onCta }: { onCta: () => void }) {
 
   return (
     <section className="hero">
-      <div className="hero__bg-photo" style={{ backgroundImage: `url(${heroBg})` }} />
+      <div
+        className="hero__bg-photo"
+        style={{
+          // a media query no CSS escolhe qual carregar — o celular nunca baixa a grande
+          '--hero-sm': `url(${heroBgSm})`,
+          '--hero-lg': `url(${heroBgLg})`,
+        } as React.CSSProperties}
+      />
       <ParticleCanvas />
       <div className="hero__bg-mesh" />
       <div className="hero__grid" />
