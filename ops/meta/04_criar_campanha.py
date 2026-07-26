@@ -42,6 +42,13 @@ DIARIO = 5000  # CENTAVOS = R$50,00  (atencao: spend_cap e em reais, este e em c
 CAMPANHA = "AD_LEADS_ESTRUTURA_BR_v1"
 DOMINIO = "aplicadev.com.br"
 
+# Janela do teste. Tem que entrar na CRIACAO do conjunto: depois que o ad set
+# "inicia" (mesmo pausado), a Meta recusa editar start_time com o subcode
+# 1487057 "A hora de inicio nao pode ser editada".
+# Offset -0300 explicito — a conta e America/Sao_Paulo.
+INICIO = "2026-07-27T00:00:00-0300"   # segunda 00h
+FIM = "2026-07-30T00:00:00-0300"      # quinta 00h — 72h, ~R$150
+
 # ── copys: o que muda entre os anuncios (o video e sempre o mesmo) ─────────
 COPYS = [
     {
@@ -222,6 +229,8 @@ for c in CONJUNTOS:
             {"event_type": "VIEW_THROUGH", "window_days": 1},
         ],
         "targeting": c["targeting"],
+        "start_time": INICIO,   # so entra na criacao — nao da pra editar depois
+        "end_time": FIM,
         # sem daily_budget aqui: com CBO o orcamento e da campanha
     })
     print(f"    criado: {r['id']}")
