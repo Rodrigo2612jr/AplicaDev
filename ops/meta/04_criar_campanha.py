@@ -164,22 +164,50 @@ if VALIDAR:
     print(f"\ntotal: 1 campanha, {len(CONJUNTOS)} conjuntos, {len(CONJUNTOS) * len(COPYS)} anuncios")
     raise SystemExit(0)
 
+# ── 0) o que ja existe ─────────────────────────────────────────────────────
+# O script e re-executavel: reaproveita o que ja foi criado em vez de
+# duplicar. Necessario porque a primeira execucao criou campanha e
+# conjuntos e so entao esbarrou no app em modo desenvolvimento.
+def existentes(edge, campos="id,name", **extra):
+    itens, depois = [], None
+    for _ in range(10):
+        p = {"fields": campos, "limit": 100, **extra}
+        if depois:
+            p["after"] = depois
+        r = chamar("GET", edge, env, p)
+        itens.extend(r.get("data", []))
+        depois = (r.get("paging") or {}).get("cursors", {}).get("after")
+        if not depois or not (r.get("paging") or {}).get("next"):
+            break
+    return itens
+
+
 # ── 1) campanha ────────────────────────────────────────────────────────────
 print("\n[1] campanha")
-r = chamar("POST", f"/{ACT}/campaigns", env, dados={
-    "name": CAMPANHA,
-    "objective": "OUTCOME_LEADS",
-    "status": "PAUSED",
-    "special_ad_categories": [],
-    "daily_budget": DIARIO,                      # CBO: orcamento na campanha
-    "bid_strategy": "LOWEST_COST_WITHOUT_CAP",
-})
-camp_id = r["id"]
-print(f"    {camp_id}")
+achadas = [c for c in existentes(f"/{ACT}/campaigns") if c["name"] == CAMPANHA]
+if achadas:
+    camp_id = achadas[0]["id"]
+    print(f"    ja existe: {camp_id} (reaproveitando)")
+else:
+    r = chamar("POST", f"/{ACT}/campaigns", env, dados={
+        "name": CAMPANHA,
+        "objective": "OUTCOME_LEADS",
+        "status": "PAUSED",
+        "special_ad_categories": [],
+        "daily_budget": DIARIO,                  # CBO: orcamento na campanha
+        "bid_strategy": "LOWEST_COST_WITHOUT_CAP",
+    })
+    camp_id = r["id"]
+    print(f"    criada: {camp_id}")
 
 # ── 2) conjuntos ───────────────────────────────────────────────────────────
+ja_adsets = {a["name"]: a["id"] for a in existentes(f"/{camp_id}/adsets")}
 criados = []
 for c in CONJUNTOS:
+    if c["slug"] in ja_adsets:
+        print(f"\n[2] conjunto {c['slug']} ja existe: {ja_adsets[c['slug']]}")
+        criados.append((c["slug"], ja_adsets[c["slug"]]))
+        continue
     print(f"\n[2] conjunto {c['slug']}")
     r = chamar("POST", f"/{ACT}/adsets", env, dados={
         "name": c["slug"],
@@ -196,13 +224,17 @@ for c in CONJUNTOS:
         "targeting": c["targeting"],
         # sem daily_budget aqui: com CBO o orcamento e da campanha
     })
-    print(f"    {r['id']}")
+    print(f"    criado: {r['id']}")
     criados.append((c["slug"], r["id"]))
 
 # ── 3) criativos + anuncios ───────────────────────────────────────────────
 total = 0
 for conj_slug, adset_id in criados:
+    ja_ads = {a["name"] for a in existentes(f"/{adset_id}/ads")}
     for cp in COPYS:
+        if cp["slug"] in ja_ads:
+            print(f"[3] anuncio {conj_slug} / {cp['slug']} ja existe, pulando")
+            continue
         video_data = {
             "video_id": VIDEO,
             "image_hash": IMG,                    # thumbnail: obrigatoria na pratica
