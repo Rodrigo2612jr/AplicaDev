@@ -1,13 +1,17 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import './styles.css'
 import logoIcon from './assets/logo-icon-clean.png'
 import heroBgSm from './assets/hero-bg-sm.webp'
 import heroBgLg from './assets/hero-bg-lg.webp'
 import Diagnostico from './pages/Diagnostico'
-import Admin from './pages/Admin'
-import Login from './pages/Login'
-import Privacidade from './pages/Privacidade'
+
+// Diagnostico fica no bundle inicial de propósito: é onde o tráfego pago cai
+// direto, e um chunk separado aí custaria um round-trip antes do formulário
+// aparecer. Estas três, não: quem vem do anúncio nunca as visita.
+const Admin = lazy(() => import('./pages/Admin'))
+const Login = lazy(() => import('./pages/Login'))
+const Privacidade = lazy(() => import('./pages/Privacidade'))
 
 /* ══════════════════════════════════════════════════════════════════
    HOOKS
@@ -1074,18 +1078,22 @@ function LandingPage() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/diagnostico" element={<Diagnostico />} />
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/privacidade" element={<Privacidade />} />
-      {/* Rede de segurança: sem isto, qualquer rota não reconhecida renderiza
-          null — tela branca. Vale para link truncado no WhatsApp, in-app
-          browser do Instagram, URL digitada errada e, principalmente, para o
-          caso de a Meta grudar os url_tags dentro do fragmento. Tráfego pago
-          batendo em tela branca é o pior desperdício possível. */}
-      <Route path="*" element={<Diagnostico />} />
-    </Routes>
+    // Suspense só é atingido pelas rotas lazy (admin/login/privacidade).
+    // A landing e o diagnóstico são síncronos e nunca passam pelo fallback.
+    <Suspense fallback={<div className="rota-carregando" />}>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/diagnostico" element={<Diagnostico />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/privacidade" element={<Privacidade />} />
+        {/* Rede de segurança: sem isto, qualquer rota não reconhecida renderiza
+            null — tela branca. Vale para link truncado no WhatsApp, in-app
+            browser do Instagram, URL digitada errada e, principalmente, para o
+            caso de a Meta grudar os url_tags dentro do fragmento. Tráfego pago
+            batendo em tela branca é o pior desperdício possível. */}
+        <Route path="*" element={<Diagnostico />} />
+      </Routes>
+    </Suspense>
   )
 }

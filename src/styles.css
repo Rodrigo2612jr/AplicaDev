@@ -2110,3 +2110,12 @@ ul { list-style: none; }
   background: #17a9a0; transform: translateY(-1px);
 }
 .login-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+/* Fallback do Suspense das rotas lazy (admin/login/privacidade).
+   Só um bloco vazio na cor de fundo: o carregamento é de milissegundos e um
+   spinner piscando fica pior que nada. A landing e o diagnóstico não passam
+   por aqui, são síncronos. */
+.rota-carregando {
+  min-height: 100vh;
+  background: #04060a;
+}
