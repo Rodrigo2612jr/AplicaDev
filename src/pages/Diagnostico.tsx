@@ -137,7 +137,12 @@ function fireEvent(evento: EventoPixel, params: Record<string, unknown>, eventID
       dataLayer?: unknown[]
     }
     if (typeof w.fbq === 'function') {
-      w.fbq('track', evento, params, eventID ? { eventID } : undefined)
+      // Lead e CompleteRegistration são eventos PADRÃO da Meta e vão por
+      // 'track'. DiagStart é nosso, e evento não-padrão em 'track' faz a Meta
+      // reclamar no console ("preferred way is using trackCustom") e ser
+      // tratado fora do catálogo padrão. Visto no teste em produção.
+      const metodo = evento === 'DiagStart' ? 'trackCustom' : 'track'
+      w.fbq(metodo, evento, params, eventID ? { eventID } : undefined)
     }
     if (typeof w.gtag === 'function') w.gtag('event', EVENT_ALIAS[evento], params)
     ;(w.dataLayer = w.dataLayer || []).push({ event: EVENT_ALIAS[evento], ...params })
