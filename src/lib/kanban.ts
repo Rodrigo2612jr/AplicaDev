@@ -116,7 +116,7 @@ export function buildKanbanPayload(input: {
 
   // Diagnóstico
   if (diag.problemas.length) add('Diagnóstico', 'problemas', 'Problemas identificados', diag.problemas.join(' · '))
-  add('Diagnóstico', 'proposta', 'Proposta sugerida', `${diag.proposta.servico} — ${diag.proposta.prazo} — ${diag.proposta.valor}`)
+  add('Diagnóstico', 'proposta', 'Proposta sugerida', `${diag.proposta.servico} · ${diag.proposta.prazo} · ${diag.proposta.valor}`)
   if (diag.abordagem.length) add('Diagnóstico', 'abordagem', 'Como abordar', diag.abordagem.join(' · '))
 
   // Origem — granular, pra saber QUAL criativo e QUAL conjunto trouxe o lead

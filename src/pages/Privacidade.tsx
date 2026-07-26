@@ -30,7 +30,7 @@ export default function Privacidade() {
 
         <h2>1. Quem somos</h2>
         <p>
-          AplicaDev — desenvolvimento de sites, aplicativos e sistemas sob medida.
+          AplicaDev: desenvolvimento de sites, aplicativos e sistemas sob medida.
           Contato para qualquer assunto de privacidade:{' '}
           <a href="mailto:support.aplicadev@gmail.com">support.aplicadev@gmail.com</a>.
         </p>
@@ -50,7 +50,7 @@ export default function Privacidade() {
         <p><strong>b) Dados coletados automaticamente.</strong> Quando você navega:</p>
         <ul>
           <li>
-            origem da visita (de qual anúncio, campanha, conjunto e criativo você veio —
+            origem da visita (de qual anúncio, campanha, conjunto e criativo você veio,
             os chamados parâmetros UTM);
           </li>
           <li>
@@ -90,15 +90,15 @@ export default function Privacidade() {
         <h2>4. Com quem compartilhamos</h2>
         <p>Só com quem é necessário para o serviço funcionar:</p>
         <ul>
-          <li><strong>Supabase</strong> — banco de dados onde os envios ficam armazenados;</li>
-          <li><strong>Vercel</strong> — hospedagem do site;</li>
+          <li><strong>Supabase</strong>: banco de dados onde os envios ficam armazenados;</li>
+          <li><strong>Vercel</strong>: hospedagem do site;</li>
           <li>
-            <strong>Meta (Facebook/Instagram)</strong> — recebe eventos de conversão para
+            <strong>Meta (Facebook/Instagram)</strong>: recebe eventos de conversão para
             medir e otimizar anúncios. Quando enviamos dados de contato para essa
             finalidade, eles vão <em>criptografados por hash</em>, não em texto legível;
           </li>
           <li>
-            <strong>Ferramenta interna de atendimento</strong> — para que sua solicitação
+            <strong>Ferramenta interna de atendimento</strong>: para que sua solicitação
             chegue a quem vai responder.
           </li>
         </ul>
@@ -111,7 +111,7 @@ export default function Privacidade() {
         <p>
           Usamos o Pixel da Meta para saber se um anúncio gerou contato. Ele grava cookies
           no seu navegador. Você pode bloquear cookies nas configurações do navegador ou
-          usar navegação anônima — o site continua funcionando, só perdemos a medição.
+          usar navegação anônima. O site continua funcionando, só perdemos a medição.
         </p>
         <p>
           Para ajustar o que a Meta usa para te mostrar anúncios:{' '}
@@ -132,7 +132,7 @@ export default function Privacidade() {
           </li>
           <li>
             <strong>A qualquer momento:</strong> se você pedir exclusão, apagamos antes
-            desses prazos — salvo o que a lei nos obrigue a manter.
+            desses prazos, salvo o que a lei nos obrigue a manter.
           </li>
         </ul>
 
@@ -156,7 +156,7 @@ export default function Privacidade() {
         <h2>8. Segurança</h2>
         <p>
           O site trafega em HTTPS, o banco exige autenticação e o acesso administrativo é
-          restrito. Ainda assim, nenhum sistema é 100% invulnerável — se acontecer um
+          restrito. Ainda assim, nenhum sistema é 100% invulnerável. Se acontecer um
           incidente que possa te afetar, avisaremos você e a ANPD, como a lei determina.
         </p>
 
