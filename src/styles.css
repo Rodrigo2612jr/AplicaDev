@@ -1867,6 +1867,47 @@ ul { list-style: none; }
   border: 1px solid rgba(245,158,11,.35); border-radius: 6px;
   padding: 2px 7px; white-space: nowrap;
 }
+/* ── Páginas legais (privacidade / termos) ─────────────────────── */
+.legal {
+  min-height: 100vh; background: #04060a;
+  padding: 48px 20px 80px; font-family: var(--font);
+}
+.legal__wrap { max-width: 760px; margin: 0 auto; color: rgba(255,255,255,.72); }
+.legal__back {
+  display: inline-block; margin-bottom: 28px;
+  color: rgba(26,183,171,.9); font-size: 14px; text-decoration: none;
+}
+.legal__back:hover { color: #1ab7ab; }
+.legal__title {
+  font-family: var(--font-head); font-size: clamp(28px, 5vw, 40px);
+  font-weight: 800; color: #fff; margin-bottom: 6px;
+}
+.legal__meta { font-size: 13px; color: rgba(255,255,255,.4); margin-bottom: 28px; }
+.legal__intro {
+  font-size: 16px; line-height: 1.7; color: rgba(255,255,255,.8);
+  padding: 16px 18px; border-radius: 12px; margin-bottom: 32px;
+  background: rgba(26,183,171,.06); border: 1px solid rgba(26,183,171,.18);
+}
+.legal__wrap h2 {
+  font-family: var(--font-head); font-size: 19px; font-weight: 700; color: #fff;
+  margin: 32px 0 12px;
+}
+.legal__wrap p { font-size: 15px; line-height: 1.75; margin-bottom: 14px; }
+.legal__wrap ul { margin: 0 0 16px 20px; }
+.legal__wrap li { font-size: 15px; line-height: 1.75; margin-bottom: 7px; }
+.legal__wrap strong { color: rgba(255,255,255,.92); }
+.legal__wrap a { color: #1ab7ab; }
+.legal__wrap code {
+  font-size: 13px; padding: 1px 5px; border-radius: 4px;
+  background: rgba(255,255,255,.07); color: rgba(255,255,255,.85);
+}
+.legal__box {
+  margin: 36px 0 32px; padding: 18px 20px; border-radius: 12px;
+  background: rgba(255,255,255,.03); border-left: 3px solid #1ab7ab;
+  font-size: 15px; line-height: 1.7;
+}
+@media (max-width: 640px) { .legal { padding: 32px 16px 60px; } }
+
 /* ── Desempenho por criativo (leitura de campanha) ─────────────── */
 .admin-criativos {
   max-width: 960px; margin: 0 auto 24px;

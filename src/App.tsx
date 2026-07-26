@@ -6,6 +6,7 @@ import heroBg from './assets/hero-bg.png'
 import Diagnostico from './pages/Diagnostico'
 import Admin from './pages/Admin'
 import Login from './pages/Login'
+import Privacidade from './pages/Privacidade'
 
 /* ══════════════════════════════════════════════════════════════════
    HOOKS
@@ -988,7 +989,7 @@ function Footer({ onCta }: { onCta: () => void }) {
             <div className="footer__links">
               <a href="#" onClick={e => { e.preventDefault(); scrollTo('faq') }}>FAQ</a>
               <a href="#" onClick={e => { e.preventDefault(); onCta() }}>Diagnóstico gratuito</a>
-              <a href="#">Política de privacidade</a>
+              <a href="#/privacidade">Política de privacidade</a>
               <a href="#">Termos de uso</a>
             </div>
           </div>
@@ -1068,6 +1069,7 @@ export default function App() {
       <Route path="/diagnostico" element={<Diagnostico />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/privacidade" element={<Privacidade />} />
     </Routes>
   )
 }

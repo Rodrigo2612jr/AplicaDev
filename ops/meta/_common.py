@@ -59,7 +59,7 @@ def _mascara(texto: str, token: str) -> str:
     return texto.replace(token, "<TOKEN>") if token else texto
 
 
-def chamar(metodo: str, caminho: str, env: dict, params=None, dados=None, arquivo=None):
+def chamar(metodo: str, caminho: str, env: dict, params=None, dados=None, arquivo=None, host=None):
     """
     Faz uma chamada na Graph API.
       metodo : 'GET' | 'POST'
@@ -71,7 +71,9 @@ def chamar(metodo: str, caminho: str, env: dict, params=None, dados=None, arquiv
     token = env["META_ACCESS_TOKEN"]
     params = dict(params or {})
     params["access_token"] = token
-    url = f"{BASE}/{API_VERSION}{caminho}"
+    # upload de video tem host proprio; o graph.facebook.com derruba a conexao
+    # (EOF in violation of protocol) em arquivo grande
+    url = f"{host or BASE}/{API_VERSION}{caminho}"
 
     if metodo == "GET":
         url = f"{url}?{urllib.parse.urlencode(params)}"
