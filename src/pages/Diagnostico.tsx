@@ -212,6 +212,66 @@ function readUtms(leadId: string): UtmDados {
   return u
 }
 
+/**
+ * Espelha o evento Lead no servidor (Conversions API).
+ *
+ * O Lead é o evento que a campanha usa pra otimizar — e é justamente o que
+ * o navegador mais perde (bloqueador de anúncio, ITP do Safari, aba fechada
+ * antes do disparo). Só o CompleteRegistration tinha cobertura server-side,
+ * porque o Convex só era chamado no fim do formulário.
+ *
+ * Vai com o MESMO event_id do pixel ("ld_<leadId>"), então a Meta deduplica
+ * e conta uma conversão só. Fire-and-forget: nunca bloqueia o formulário.
+ */
+function enviarCapiLead(nome: string, whatsapp: string, leadId: string, u: UtmDados) {
+  try {
+    const url = import.meta.env.VITE_CAPI_EVENT_URL as string | undefined
+    if (!url) return
+    const corpo = JSON.stringify({
+      eventName: 'Lead',
+      eventId: `ld_${leadId}`,
+      eventSourceUrl: window.location.href.slice(0, 500),
+      nome,
+      telefone: whatsapp,
+      externalId: leadId,
+      fbc: u.fbc,
+      fbp: u.fbp,
+      conteudo: u.utm_content,
+    })
+    // keepalive: o envio sobrevive se a página for fechada logo depois
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: corpo,
+      keepalive: true,
+    }).catch(() => { /* tracking nunca quebra o fluxo */ })
+  } catch { /* ignore */ }
+}
+
+/**
+ * Relê os cookies do pixel na hora de usar.
+ *
+ * readUtms roda no mount, mas o fbevents.js é carregado com async — na
+ * primeira visita ele quase sempre grava _fbp/_fbc DEPOIS disso. Resultado:
+ * a atribuição ficava congelada sem os dois identificadores que a Conversions
+ * API usa pra casar o lead com o clique no anúncio.
+ *
+ * Como o usuário leva pelo menos alguns segundos até o passo de contato, aqui
+ * os cookies já existem. Só preenche o que estiver faltando.
+ */
+function atualizaCookiesPixel(u: UtmDados): UtmDados {
+  try {
+    if (!u.fbp) {
+      const fbp = readCookie('_fbp')
+      if (fbp) u.fbp = fbp
+    }
+    const fbc = readCookie('_fbc')
+    // o cookie real ganha do _fbc que montamos na mão a partir do fbclid
+    if (fbc) u.fbc = fbc
+  } catch { /* ignore */ }
+  return u
+}
+
 /* ═══════════════════════════════════════════════════════════════
    UI COMPONENTS
 ═══════════════════════════════════════════════════════════════ */
@@ -335,10 +395,17 @@ export default function Diagnostico() {
       // O evento sai ANTES do await de propósito: o insert leva 200-800ms em
       // 4G, e se a pessoa fecha a aba nessa janela o sinal se perde — logo no
       // evento que a campanha usa pra otimizar. O banco continua igual.
+      // relê _fbp/_fbc: no mount o fbevents.js (async) quase sempre ainda não
+      // tinha gravado os cookies. Agora já gravou.
+      utm.current = atualizaCookiesPixel(utm.current)
       if (!leadFired.current) {
         leadFired.current = true
         // identifica ANTES do evento (Advanced Matching)
         identificar(data.nome, data.whatsapp, leadId.current)
+        // espelha o Lead no servidor: é o evento que a campanha otimiza, e o
+        // navegador perde parte deles (bloqueador, ITP, aba fechada).
+        // Mesmo event_id do pixel -> a Meta deduplica.
+        enviarCapiLead(data.nome, data.whatsapp, leadId.current, utm.current)
         // ← EVENTO DE OTIMIZAÇÃO DA CAMPANHA. Fica aqui, não no done:
         //   é o único ponto do funil com volume pra alimentar o algoritmo.
         fireEvent('Lead', {
