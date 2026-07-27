@@ -481,7 +481,7 @@ export default function Diagnostico() {
                 a partir de <strong>R$999,90</strong>.
               </p>
               <div className="diag-intro__proof">
-                ⚡ Já colocamos dezenas de negócios no ar em até 10 dias, sem enrolação e sem termo técnico.
+                ⚡ Escopo, prazo e preço fechados antes de começar. Sem enrolação e sem termo técnico.
               </div>
             </div>
           )}
