@@ -1,7 +1,7 @@
 import type { Lead, LeadDados, Rec, Temperatura } from './db'
 
 /* ═══════════════════════════════════════════════════════════════════
-   DIAGNÓSTICO — cérebro compartilhado entre o formulário e o Admin.
+   DIAGNÓSTICO: cérebro compartilhado entre o formulário e o Admin.
 
    Filosofia: o lead entrega SINTOMAS-FATO; aqui a gente infere a dor
    oculta, estima o custo em R$ (ticket × volume) e recomenda a solução.
@@ -45,7 +45,7 @@ const isInvisivelGoogle = (d: LeadDados) =>
   d.temSite === 'nao' // fallback legado
 
 /* ═══════════════════════════════════════════════════════════════════
-   RECOMMEND — infere site / sistema / app (o lead nunca vê isso)
+   RECOMMEND: infere site / sistema / app (o lead nunca vê isso)
 ═══════════════════════════════════════════════════════════════════ */
 const APP_NICHES = ['academia', 'clinica', 'clínica', 'restaurante', 'escola', 'fitness',
   'barbearia', 'salão', 'salao', 'pet', 'saúde', 'saude', 'farmácia', 'farmacia',
@@ -84,7 +84,7 @@ export function recommend(d: LeadDados): Rec {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   CLASSIFICAÇÃO COMERCIAL — QUENTE / MORNO / FRIO (score B+A+T+F+N)
+   CLASSIFICAÇÃO COMERCIAL: QUENTE / MORNO / FRIO (score B+A+T+F+N)
 ═══════════════════════════════════════════════════════════════════ */
 export interface Classificacao {
   temperatura: Temperatura
@@ -136,7 +136,7 @@ export function classifyLead(d: LeadDados): Classificacao {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TRAVAS — pro mini-diagnóstico da tela final (SÓ nomeia a dor,
+   TRAVAS: pro mini-diagnóstico da tela final (SÓ nomeia a dor,
    sem entregar solução nem a conta em R$: isso é isca pro WhatsApp)
 ═══════════════════════════════════════════════════════════════════ */
 export interface Trava { titulo: string; detalhe: string }
@@ -150,8 +150,11 @@ export function generateTravas(d: LeadDados): Trava[] {
     detalhe: 'Sem confirmação automática, todo horário furado é uma vaga que ninguém preenche.',
   })
   if (isFinanceiroCego(d)) t.push({
-    titulo: 'Você sabe quanto vendeu "no olho"',
-    detalhe: 'Sem número na mão, decisão de preço, compra e estoque vira aposta.',
+    // Não citar "no olho" nem "no caderno": o formulário deixou de usar essas
+    // expressões, e repeti-las aqui devolveria ao lead uma frase que ele nunca
+    // leu, soando acusatória bem na hora do clique do WhatsApp.
+    titulo: 'O número do mês só existe se você parar pra somar',
+    detalhe: 'Sem o valor na mão em tempo real, decisão de preço, compra e estoque vira aposta.',
   })
   if (isRecorrenciaFraca(d)) t.push({
     titulo: 'Cliente compra uma vez e você perde o rastro',
@@ -188,7 +191,7 @@ export function generateTravas(d: LeadDados): Trava[] {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   DIAGNÓSTICO COMPLETO — pro painel Admin (dor + custo em R$ + proposta)
+   DIAGNÓSTICO COMPLETO: pro painel Admin (dor + custo em R$ + proposta)
 ═══════════════════════════════════════════════════════════════════ */
 const TIPO_LABEL: Record<string, string> = {
   prestador: 'prestador de serviço', 'loja-fisica': 'loja física', 'loja-online': 'loja online / e-commerce',
@@ -240,7 +243,7 @@ export function generateDiagnosis(lead: Lead): Diagnosis {
   const tMid = TICKET_MID[d.ticketMedio] ?? 0
 
   /* ── Situação ── */
-  situacao.push(`${lead.nome_empresa || lead.nome} — ${TIPO_LABEL[d.empresaTipo] || d.empresaTipo || 'negócio'}${d.nicho ? ` (${d.nicho})` : ''}, ${CLIENTES_LABEL[d.clientesMes] ?? '? clientes'}, ticket ${TICKET_LABEL[d.ticketMedio] ?? '?'}`)
+  situacao.push(`${lead.nome_empresa || lead.nome}: ${TIPO_LABEL[d.empresaTipo] || d.empresaTipo || 'negócio'}${d.nicho ? ` (${d.nicho})` : ''}, ${CLIENTES_LABEL[d.clientesMes] ?? '? clientes'}, ticket ${TICKET_LABEL[d.ticketMedio] ?? '?'}`)
   if (fat > 0) situacao.push(`Faturamento estimado: ~${brl(fat)}/mês (ticket × volume)`)
   if (d.canais?.length) situacao.push(`Aquisição: ${d.canais.join(', ')}`)
   if (d.googleResultado) situacao.push(`No Google aparece: ${GOOGLE_LABEL[d.googleResultado] ?? d.googleResultado}`)
@@ -254,10 +257,10 @@ export function generateDiagnosis(lead: Lead): Diagnosis {
       custos.push(`No-show: ~${cMid} atend./mês × ~15% de furo × ${brl(tMid)} ≈ ${brl(perda)}/mês em cadeira vazia que ninguém revende.`)
     }
   }
-  if (isFinanceiroCego(d)) problemas.push('Cegueira financeira: sabe quanto vendeu "no olho/caderno", decide no achismo')
-  if (isBaseFragil(d)) problemas.push('Base de clientes frágil e fragmentada (cabeça/WhatsApp/papel) — sem histórico, sem backup')
+  if (isFinanceiroCego(d)) problemas.push('Cegueira financeira: o número do mês só existe se ele parar pra somar, decide no achismo')
+  if (isBaseFragil(d)) problemas.push('Base de clientes frágil e fragmentada (cabeça, WhatsApp, papel): sem histórico, sem backup')
   if (isRecorrenciaFraca(d)) {
-    problemas.push('Recompra não medida — LTV largado na mesa')
+    problemas.push('Recompra não medida: LTV largado na mesa')
     if (cMid && tMid) {
       const recompra = 8 * tMid // ~2 clientes/semana
       custos.push(`Recompra: trazer só 2 clientes antigos por semana no seu ticket já é ~${brl(recompra)}/mês sem gastar R$1 em anúncio.`)
@@ -267,30 +270,30 @@ export function generateDiagnosis(lead: Lead): Diagnosis {
     problemas.push('Invisível pra quem procura ativamente no Google')
     if (tMid) custos.push(`Google: se só 1 cliente/semana te procura e não acha ≈ ${brl(4 * tMid)}/mês indo pro concorrente que aparece.`)
   }
-  if (isDonoGargalo(d)) problemas.push('O dono é o ponto único de falha — o negócio não roda sem ele (teto de crescimento)')
+  if (isDonoGargalo(d)) problemas.push('O dono é o ponto único de falha: o negócio não roda sem ele (teto de crescimento)')
   if (d.horasWhatsapp === '2-4h' || d.horasWhatsapp === 'mais-4h') {
     const horasMes = (d.horasWhatsapp === 'mais-4h' ? 4 : 3) * 26
-    custos.push(`Tempo: ~${horasMes}h/mês no WhatsApp respondendo o que um site/bot resolve — equivale a meio funcionário só do seu tempo.`)
+    custos.push(`Tempo: ~${horasMes}h/mês no WhatsApp respondendo o que um site/bot resolve: equivale a meio funcionário só do seu tempo.`)
   }
-  if (d.canais?.length === 1 && d.canais[0] === 'indicacao') problemas.push('Só indicação/boca a boca — zero previsibilidade de aquisição')
+  if (d.canais?.length === 1 && d.canais[0] === 'indicacao') problemas.push('Só indicação/boca a boca: zero previsibilidade de aquisição')
 
   /* ── Oportunidades (o que a AplicaDev entrega) ── */
   if (isInvisivelGoogle(d)) oportunidades.push('Site de alta conversão + SEO local pra capturar a demanda que já procura no Google')
   if (isAgendaManual(d)) oportunidades.push('Sistema/app de agendamento com confirmação e lembrete automático (mata o no-show)')
-  if (isFinanceiroCego(d)) oportunidades.push('Painel de vendas/financeiro em tempo real — parar de decidir no escuro')
+  if (isFinanceiroCego(d)) oportunidades.push('Painel de vendas/financeiro em tempo real: parar de decidir no escuro')
   if (isRecorrenciaFraca(d) || isBaseFragil(d)) oportunidades.push('CRM próprio + automação de reativação da base (ativar o LTV parado)')
-  if (isDonoGargalo(d)) oportunidades.push('Sistema que tira o processo da cabeça do dono — a equipe roda sem depender dele')
+  if (isDonoGargalo(d)) oportunidades.push('Sistema que tira o processo da cabeça do dono: a equipe roda sem depender dele')
   if (fat >= 50000 || (CLIENTES_MID[d.clientesMes] ?? 0) >= 1700) oportunidades.push('Volume/faturamento alto: cabe solução completa (combo site + sistema/app), ROI rápido')
 
   /* ── Proposta ── */
   let servico = '', prazo = '', valor = ''
   if (r === 'site') {
-    servico = 'Site de Alta Conversão — AplicaDev'
+    servico = 'Site de Alta Conversão da AplicaDev'
     escopo.push('Site/LP responsivo de alta conversão', 'Copy estratégica + integração WhatsApp', 'SEO local pra aparecer no Google', 'Design premium + performance')
     prazo = '7 dias úteis'; valor = fat >= 15000 ? 'R$999,90 - R$2.500' : 'A partir de R$999,90'
     upsell.push('CRM pra gerenciar os leads captados', 'Sistema de agendamento online')
   } else if (r === 'sistema') {
-    servico = 'Sistema sob Medida — AplicaDev'
+    servico = 'Sistema sob Medida da AplicaDev'
     escopo.push('Sistema web personalizado')
     if (isBaseFragil(d) || isRecorrenciaFraca(d)) escopo.push('CRM: base de clientes + histórico + reativação')
     if (isFinanceiroCego(d)) escopo.push('Dashboard de vendas/financeiro em tempo real')
@@ -300,7 +303,7 @@ export function generateDiagnosis(lead: Lead): Diagnosis {
     valor = fat >= 50000 ? 'R$5.000 - R$12.000' : fat >= 15000 ? 'R$3.000 - R$7.000' : 'R$2.000 - R$5.000'
     upsell.push('App mobile complementar', 'Site institucional (combo)')
   } else {
-    servico = 'Aplicativo Mobile — AplicaDev'
+    servico = 'Aplicativo Mobile da AplicaDev'
     escopo.push('App multiplataforma (iOS + Android) ou PWA', 'UX/UI personalizado', 'Backend cloud escalável', 'Publicação nas lojas')
     if (isAgendaManual(d)) escopo.push('Agendamento + fidelização (padrão do setor)')
     prazo = '10 dias úteis (MVP)'; valor = 'R$5.000 - R$15.000'
@@ -309,14 +312,14 @@ export function generateDiagnosis(lead: Lead): Diagnosis {
 
   /* ── Abordagem ── */
   const tempMap: Record<Temperatura, string> = {
-    QUENTE: '🔴 QUENTE — atender AGORA. Fura fila, casa com a entrega em 10 dias. Abrir com o prejuízo revelado.',
-    MORNO: '🟡 MORNO — enviar proposta + follow-up. Nutrir com case do mesmo nicho.',
-    FRIO: '🔵 FRIO — portfólio e contato leve, sem pressão. Quando amadurecer, lembra da gente.',
+    QUENTE: '🔴 QUENTE: atender AGORA. Fura fila, casa com a entrega em 10 dias. Abrir com o prejuízo revelado.',
+    MORNO: '🟡 MORNO: enviar proposta + follow-up. Nutrir com case do mesmo nicho.',
+    FRIO: '🔵 FRIO: portfólio e contato leve, sem pressão. Quando amadurecer, lembra da gente.',
   }
   abordagem.push(tempMap[cls.temperatura])
   if (d.decisor === 'nao-sou-eu') abordagem.push('⚠️ Não é o decisor: pedir pra incluir quem bate o martelo na conversa (multi-thread)')
   if (d.decisor === 'alinhar') abordagem.push('Precisa alinhar com sócio/família: dar material pra ele defender a compra internamente')
-  if (d.perdaRecente === 'sim') abordagem.push('Perdeu cliente há pouco e admitiu — dor ativa, abrir por aí')
+  if (d.perdaRecente === 'sim') abordagem.push('Perdeu cliente há pouco e admitiu: dor ativa, abrir por aí')
   if (cls.sinais.length) abordagem.push('Sinais: ' + cls.sinais.join(' · '))
 
   return {

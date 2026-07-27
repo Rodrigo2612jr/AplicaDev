@@ -495,22 +495,22 @@ export default function Diagnostico() {
                   <div className="diag-opts-col">
                     <Opt label="Prestador de serviço" selected={data.empresaTipo === 'prestador'} onClick={() => set('empresaTipo', 'prestador')} />
                     <Opt label="Loja física" selected={data.empresaTipo === 'loja-fisica'} onClick={() => set('empresaTipo', 'loja-fisica')} />
-                    <Opt label="Loja online / e-commerce" selected={data.empresaTipo === 'loja-online'} onClick={() => set('empresaTipo', 'loja-online')} />
-                    <Opt label="Restaurante / food" selected={data.empresaTipo === 'restaurante'} onClick={() => set('empresaTipo', 'restaurante')} />
-                    <Opt label="Clínica / saúde / estética / beleza" selected={data.empresaTipo === 'clinica'} onClick={() => set('empresaTipo', 'clinica')} />
+                    <Opt label="Loja online ou e-commerce" selected={data.empresaTipo === 'loja-online'} onClick={() => set('empresaTipo', 'loja-online')} />
+                    <Opt label="Restaurante, lanchonete ou delivery" selected={data.empresaTipo === 'restaurante'} onClick={() => set('empresaTipo', 'restaurante')} />
+                    <Opt label="Clínica, saúde, estética ou beleza" selected={data.empresaTipo === 'clinica'} onClick={() => set('empresaTipo', 'clinica')} />
                     <Opt label="Vendo pra outras empresas (B2B)" selected={data.empresaTipo === 'b2b'} onClick={() => set('empresaTipo', 'b2b')} />
                     <Opt label="Outro" selected={data.empresaTipo === 'outro'} onClick={() => set('empresaTipo', 'outro')} />
                   </div>
                 </Q>
-                <Q label="Qual o ramo? (ex: barbearia, clínica, pet shop, restaurante...)">
+                <Q label="E dentro disso, qual é o seu ramo?">
                   <input className="diag-input" type="text" placeholder="Escreve aqui o seu ramo" value={data.nicho} onChange={e => set('nicho', e.target.value)} />
                 </Q>
-                <Q label="Você já tem um palpite do que resolveria? (opcional)">
+                <Q label="O que o seu negócio mais precisa resolver agora? (opcional)">
                   <div className="diag-opts-col">
-                    <Opt label="Acho que é um site" selected={data.serviceChoice === 'site'} onClick={() => set('serviceChoice', 'site')} />
-                    <Opt label="Acho que é um app" selected={data.serviceChoice === 'app'} onClick={() => set('serviceChoice', 'app')} />
-                    <Opt label="Acho que é um sistema pra organizar tudo" selected={data.serviceChoice === 'sistema'} onClick={() => set('serviceChoice', 'sistema')} />
-                    <Opt label="Não faço ideia, quero que vocês me digam" selected={data.serviceChoice === 'nao-sei'} onClick={() => set('serviceChoice', 'nao-sei')} />
+                    <Opt label="Ser encontrado e passar mais confiança" selected={data.serviceChoice === 'site'} onClick={() => set('serviceChoice', 'site')} />
+                    <Opt label="Estar na mão do cliente, pra ele resolver sozinho" selected={data.serviceChoice === 'app'} onClick={() => set('serviceChoice', 'app')} />
+                    <Opt label="Organizar a operação e parar de perder informação" selected={data.serviceChoice === 'sistema'} onClick={() => set('serviceChoice', 'sistema')} />
+                    <Opt label="Sei onde aperta, quero saber por onde começar" selected={data.serviceChoice === 'nao-sei'} onClick={() => set('serviceChoice', 'nao-sei')} />
                   </div>
                 </Q>
               </div>
@@ -522,17 +522,17 @@ export default function Diagnostico() {
             <div className="diag-step">
               <StepHead emoji="📊" title="Seu negócio em números" sub="Nada de conta difícil, só o que você já sabe de cabeça." />
               <div className="diag-section">
-                <Q label="Quantos clientes você atende num dia normal?">
+                <Q label="Num dia normal, quantos clientes você atende?">
                   <div className="diag-opts-row">
-                    <Opt label="Até 5 por dia" selected={data.clientesMes === 'd-ate-5'} onClick={() => set('clientesMes', 'd-ate-5')} />
-                    <Opt label="5 a 15 por dia" selected={data.clientesMes === 'd-5-15'} onClick={() => set('clientesMes', 'd-5-15')} />
-                    <Opt label="15 a 40 por dia" selected={data.clientesMes === 'd-15-40'} onClick={() => set('clientesMes', 'd-15-40')} />
-                    <Opt label="40 a 100 por dia" selected={data.clientesMes === 'd-40-100'} onClick={() => set('clientesMes', 'd-40-100')} />
-                    <Opt label="Mais de 100 por dia" selected={data.clientesMes === 'd-100+'} onClick={() => set('clientesMes', 'd-100+')} />
-                    <Opt label="Não sei dizer" selected={data.clientesMes === 'nao-sei'} onClick={() => set('clientesMes', 'nao-sei')} />
+                    <Opt label="Até 5" selected={data.clientesMes === 'd-ate-5'} onClick={() => set('clientesMes', 'd-ate-5')} />
+                    <Opt label="5 a 15" selected={data.clientesMes === 'd-5-15'} onClick={() => set('clientesMes', 'd-5-15')} />
+                    <Opt label="15 a 40" selected={data.clientesMes === 'd-15-40'} onClick={() => set('clientesMes', 'd-15-40')} />
+                    <Opt label="40 a 100" selected={data.clientesMes === 'd-40-100'} onClick={() => set('clientesMes', 'd-40-100')} />
+                    <Opt label="Mais de 100" selected={data.clientesMes === 'd-100+'} onClick={() => set('clientesMes', 'd-100+')} />
+                    <Opt label="Não tenho como medir isso hoje" selected={data.clientesMes === 'nao-sei'} onClick={() => set('clientesMes', 'nao-sei')} />
                   </div>
                 </Q>
-                <Q label="Quanto um cliente gasta com você, em média?">
+                <Q label="Em média, quanto entra por cliente atendido?">
                   <div className="diag-opts-row">
                     <Opt label="Até R$50" selected={data.ticketMedio === 'ate-50'} onClick={() => set('ticketMedio', 'ate-50')} />
                     <Opt label="R$50 a R$150" selected={data.ticketMedio === '50-150'} onClick={() => set('ticketMedio', '50-150')} />
@@ -550,23 +550,23 @@ export default function Diagnostico() {
             <div className="diag-step">
               <StepHead emoji="🎯" title="Como um cliente novo chega até você" sub="Pra entender de onde vem (ou não vem) a sua demanda." />
               <div className="diag-section">
-                <Q label="Como um cliente NOVO costuma te achar hoje? (marque todos)">
+                <Q label="Por onde chega um cliente novo hoje? (pode marcar mais de um)">
                   <div className="diag-opts-multi">
-                    <Multi icon="🗣️" label="Indicação / boca a boca" selected={data.canais.includes('indicacao')} onClick={() => toggle('canais', 'indicacao')} />
+                    <Multi icon="🗣️" label="Indicação, boca a boca" selected={data.canais.includes('indicacao')} onClick={() => toggle('canais', 'indicacao')} />
                     <Multi icon="📸" label="Instagram" selected={data.canais.includes('instagram')} onClick={() => toggle('canais', 'instagram')} />
-                    <Multi icon="🔍" label="Google" selected={data.canais.includes('google')} onClick={() => toggle('canais', 'google')} />
-                    <Multi icon="📍" label="Passa na frente / ponto" selected={data.canais.includes('ponto')} onClick={() => toggle('canais', 'ponto')} />
+                    <Multi icon="🔍" label="Busca no Google" selected={data.canais.includes('google')} onClick={() => toggle('canais', 'google')} />
+                    <Multi icon="📍" label="Passou na frente" selected={data.canais.includes('ponto')} onClick={() => toggle('canais', 'ponto')} />
                     <Multi icon="💬" label="WhatsApp" selected={data.canais.includes('whatsapp')} onClick={() => toggle('canais', 'whatsapp')} />
                     <Multi icon="📢" label="Anúncio pago" selected={data.canais.includes('anuncio')} onClick={() => toggle('canais', 'anuncio')} />
                   </div>
                 </Q>
-                <Q label="Se eu jogar o nome do seu negócio no Google agora, o que aparece?">
+                <Q label="Se um cliente buscar o nome do seu negócio no Busca no Google agora, o que aparece?">
                   <div className="diag-opts-col">
                     <Opt label="Meu site" selected={data.googleResultado === 'site'} onClick={() => set('googleResultado', 'site')} />
-                    <Opt label="Só meu Instagram" selected={data.googleResultado === 'so-insta'} onClick={() => set('googleResultado', 'so-insta')} />
-                    <Opt label="Só o Google Maps" selected={data.googleResultado === 'so-maps'} onClick={() => set('googleResultado', 'so-maps')} />
-                    <Opt label="Não aparece nada" selected={data.googleResultado === 'nada'} onClick={() => set('googleResultado', 'nada')} />
-                    <Opt label="Nunca testei" selected={data.googleResultado === 'nunca-testei'} onClick={() => set('googleResultado', 'nunca-testei')} />
+                    <Opt label="Só o meu Instagram" selected={data.googleResultado === 'so-insta'} onClick={() => set('googleResultado', 'so-insta')} />
+                    <Opt label="Só o Busca no Google Maps" selected={data.googleResultado === 'so-maps'} onClick={() => set('googleResultado', 'so-maps')} />
+                    <Opt label="Pouca coisa, ou nada" selected={data.googleResultado === 'nada'} onClick={() => set('googleResultado', 'nada')} />
+                    <Opt label="Nunca parei pra olhar" selected={data.googleResultado === 'nunca-testei'} onClick={() => set('googleResultado', 'nunca-testei')} />
                   </div>
                 </Q>
               </div>
@@ -578,21 +578,21 @@ export default function Diagnostico() {
             <div className="diag-step">
               <StepHead emoji="🗓️" title="O corre do dia a dia" sub="Como funciona a sua rotina com o cliente." />
               <div className="diag-section">
-                <Q label="Como você marca um horário ou compromisso com o cliente?">
+                <Q label="Quando um cliente quer marcar com você, como isso acontece hoje?">
                   <div className="diag-opts-col">
-                    <Opt label="Caderno / agenda de papel" selected={data.agendaMetodo === 'caderno'} onClick={() => set('agendaMetodo', 'caderno')} />
-                    <Opt label="Pelo WhatsApp mesmo" selected={data.agendaMetodo === 'whatsapp'} onClick={() => set('agendaMetodo', 'whatsapp')} />
+                    <Opt label="Agenda de papel" selected={data.agendaMetodo === 'caderno'} onClick={() => set('agendaMetodo', 'caderno')} />
+                    <Opt label="Direto na conversa do WhatsApp" selected={data.agendaMetodo === 'whatsapp'} onClick={() => set('agendaMetodo', 'whatsapp')} />
                     <Opt label="Planilha" selected={data.agendaMetodo === 'planilha'} onClick={() => set('agendaMetodo', 'planilha')} />
-                    <Opt label="Uso um app/sistema de agendamento" selected={data.agendaMetodo === 'app'} onClick={() => set('agendaMetodo', 'app')} />
-                    <Opt label="Não trabalho com horário marcado" selected={data.agendaMetodo === 'nao-agenda'} onClick={() => set('agendaMetodo', 'nao-agenda')} />
+                    <Opt label="Um app ou sistema de agendamento" selected={data.agendaMetodo === 'app'} onClick={() => set('agendaMetodo', 'app')} />
+                    <Opt label="Por ordem de chegada, sem hora marcada" selected={data.agendaMetodo === 'nao-agenda'} onClick={() => set('agendaMetodo', 'nao-agenda')} />
                   </div>
                 </Q>
                 {data.agendaMetodo !== 'nao-agenda' && (
-                  <Q label="Você manda lembrete pro cliente antes do horário?">
+                  <Q label="E o lembrete antes do horário, como funciona?">
                     <div className="diag-opts-col">
-                      <Opt label="Não mando" selected={data.lembreteAuto === 'nao'} onClick={() => set('lembreteAuto', 'nao')} />
-                      <Opt label="Mando na mão quando lembro" selected={data.lembreteAuto === 'manual'} onClick={() => set('lembreteAuto', 'manual')} />
-                      <Opt label="É automático" selected={data.lembreteAuto === 'automatico'} onClick={() => set('lembreteAuto', 'automatico')} />
+                      <Opt label="Não trabalho com lembrete" selected={data.lembreteAuto === 'nao'} onClick={() => set('lembreteAuto', 'nao')} />
+                      <Opt label="Mando na mão, quando dá tempo" selected={data.lembreteAuto === 'manual'} onClick={() => set('lembreteAuto', 'manual')} />
+                      <Opt label="Sai automático, sem eu precisar lembrar" selected={data.lembreteAuto === 'automatico'} onClick={() => set('lembreteAuto', 'automatico')} />
                     </div>
                   </Q>
                 )}
@@ -605,21 +605,21 @@ export default function Diagnostico() {
             <div className="diag-step">
               <StepHead emoji="💰" title="Controle do dinheiro e das informações" sub="A parte que quase ninguém para pra olhar." />
               <div className="diag-section">
-                <Q label="Como você sabe quanto vendeu esse mês?">
+                <Q label="Como você acompanha quanto o negócio já vendeu esse mês?">
                   <div className="diag-opts-col">
-                    <Opt label="De cabeça / no olho" selected={data.visibilidadeFinanceira === 'olho'} onClick={() => set('visibilidadeFinanceira', 'olho')} />
-                    <Opt label="Anoto num caderno" selected={data.visibilidadeFinanceira === 'caderno'} onClick={() => set('visibilidadeFinanceira', 'caderno')} />
+                    <Opt label="Acompanho de cabeça, tenho boa noção" selected={data.visibilidadeFinanceira === 'olho'} onClick={() => set('visibilidadeFinanceira', 'olho')} />
+                    <Opt label="Anoto no caderno" selected={data.visibilidadeFinanceira === 'caderno'} onClick={() => set('visibilidadeFinanceira', 'caderno')} />
                     <Opt label="Tenho uma planilha" selected={data.visibilidadeFinanceira === 'planilha'} onClick={() => set('visibilidadeFinanceira', 'planilha')} />
-                    <Opt label="Um sistema me mostra" selected={data.visibilidadeFinanceira === 'sistema'} onClick={() => set('visibilidadeFinanceira', 'sistema')} />
+                    <Opt label="Um sistema me mostra na hora" selected={data.visibilidadeFinanceira === 'sistema'} onClick={() => set('visibilidadeFinanceira', 'sistema')} />
                   </div>
                 </Q>
-                <Q label="Onde ficam guardadas as informações dos seus clientes? (marque todos)">
+                <Q label="O contato e o histórico dos seus clientes ficam onde hoje? (marque todos)">
                   <div className="diag-opts-multi">
-                    <Multi icon="🧠" label="Na minha cabeça" selected={data.baseClientes.includes('cabeca')} onClick={() => toggle('baseClientes', 'cabeca')} />
-                    <Multi icon="💬" label="No meu WhatsApp" selected={data.baseClientes.includes('whatsapp')} onClick={() => toggle('baseClientes', 'whatsapp')} />
-                    <Multi icon="📔" label="Caderno / papel" selected={data.baseClientes.includes('papel')} onClick={() => toggle('baseClientes', 'papel')} />
+                    <Multi icon="🧠" label="Comigo, eu que lembro de cada um" selected={data.baseClientes.includes('cabeca')} onClick={() => toggle('baseClientes', 'cabeca')} />
+                    <Multi icon="💬" label="Espalhado no WhatsApp" selected={data.baseClientes.includes('whatsapp')} onClick={() => toggle('baseClientes', 'whatsapp')} />
+                    <Multi icon="📔" label="Caderno ou ficha de papel" selected={data.baseClientes.includes('papel')} onClick={() => toggle('baseClientes', 'papel')} />
                     <Multi icon="📊" label="Planilha" selected={data.baseClientes.includes('planilha')} onClick={() => toggle('baseClientes', 'planilha')} />
-                    <Multi icon="🗂️" label="Um sistema / CRM" selected={data.baseClientes.includes('crm')} onClick={() => toggle('baseClientes', 'crm')} />
+                    <Multi icon="🗂️" label="Um sistema ou CRM" selected={data.baseClientes.includes('crm')} onClick={() => toggle('baseClientes', 'crm')} />
                   </div>
                 </Q>
               </div>
@@ -631,19 +631,19 @@ export default function Diagnostico() {
             <div className="diag-step">
               <StepHead emoji="🔁" title="Depois que o cliente compra a primeira vez" sub="O dinheiro mais barato de todos: quem já te conhece." />
               <div className="diag-section">
-                <Q label="Um cliente que compra ou atende uma vez costuma voltar?">
+                <Q label="Cliente que veio uma vez costuma voltar?">
                   <div className="diag-opts-col">
                     <Opt label="Sempre volta" selected={data.recorrencia === 'sempre'} onClick={() => set('recorrencia', 'sempre')} />
-                    <Opt label="Às vezes" selected={data.recorrencia === 'as-vezes'} onClick={() => set('recorrencia', 'as-vezes')} />
-                    <Opt label="Quase nunca" selected={data.recorrencia === 'quase-nunca'} onClick={() => set('recorrencia', 'quase-nunca')} />
-                    <Opt label="Não sei dizer" selected={data.recorrencia === 'nao-sei'} onClick={() => set('recorrencia', 'nao-sei')} />
+                    <Opt label="Uma parte volta, outra some" selected={data.recorrencia === 'as-vezes'} onClick={() => set('recorrencia', 'as-vezes')} />
+                    <Opt label="A maioria vem uma vez só" selected={data.recorrencia === 'quase-nunca'} onClick={() => set('recorrencia', 'quase-nunca')} />
+                    <Opt label="Não tenho como medir isso hoje" selected={data.recorrencia === 'nao-sei'} onClick={() => set('recorrencia', 'nao-sei')} />
                   </div>
                 </Q>
-                <Q label="Consegue avisar seus clientes antigos quando tem novidade ou promoção? (opcional)">
+                <Q label="Quando você tem uma novidade ou promoção, dá pra avisar quem já comprou? (opcional)">
                   <div className="diag-opts-col">
-                    <Opt label="Sim, tenho a lista organizada" selected={data.reativacao === 'lista'} onClick={() => set('reativacao', 'lista')} />
-                    <Opt label="Posto no Instagram e torço" selected={data.reativacao === 'posta-torce'} onClick={() => set('reativacao', 'posta-torce')} />
-                    <Opt label="Não tenho os contatos juntos num lugar" selected={data.reativacao === 'nao-tenho-junto'} onClick={() => set('reativacao', 'nao-tenho-junto')} />
+                    <Opt label="Sim, tenho os contatos organizados num lugar só" selected={data.reativacao === 'lista'} onClick={() => set('reativacao', 'lista')} />
+                    <Opt label="Posto nas redes, alcança quem estiver por lá" selected={data.reativacao === 'posta-torce'} onClick={() => set('reativacao', 'posta-torce')} />
+                    <Opt label="Os contatos existem, mas estão espalhados" selected={data.reativacao === 'nao-tenho-junto'} onClick={() => set('reativacao', 'nao-tenho-junto')} />
                   </div>
                 </Q>
               </div>
@@ -655,15 +655,15 @@ export default function Diagnostico() {
             <div className="diag-step">
               <StepHead emoji="🏝️" title="Se você desse uma sumida..." sub="Vamos ver o quanto o negócio depende de você." />
               <div className="diag-section">
-                <Q label="Se você tirasse 1 semana de férias amanhã, sem preparar nada, o negócio rodava sozinho?">
+                <Q label="Se você sumisse uma semana amanhã, sem preparar nada, o que acontecia?">
                   <div className="diag-opts-col">
-                    <Opt label="Rodava tranquilo" selected={data.donoGargalo === 'tranquilo'} onClick={() => set('donoGargalo', 'tranquilo')} />
-                    <Opt label="Rodava meio capengando" selected={data.donoGargalo === 'capengando'} onClick={() => set('donoGargalo', 'capengando')} />
+                    <Opt label="Rodava normal, sem mim" selected={data.donoGargalo === 'tranquilo'} onClick={() => set('donoGargalo', 'tranquilo')} />
+                    <Opt label="Rodava, mas capengando" selected={data.donoGargalo === 'capengando'} onClick={() => set('donoGargalo', 'capengando')} />
                     <Opt label="Metade das coisas parava" selected={data.donoGargalo === 'metade-para'} onClick={() => set('donoGargalo', 'metade-para')} />
-                    <Opt label="Parava quase tudo" selected={data.donoGargalo === 'para-tudo'} onClick={() => set('donoGargalo', 'para-tudo')} />
+                    <Opt label="Parava quase tudo, sou eu que seguro" selected={data.donoGargalo === 'para-tudo'} onClick={() => set('donoGargalo', 'para-tudo')} />
                   </div>
                 </Q>
-                <Q label="Quanto do seu dia vai em responder cliente no WhatsApp? (opcional)">
+                <Q label="Num dia normal, quanto tempo vai no WhatsApp respondendo cliente (preço, horário, endereço, se tem vaga)? (opcional)">
                   <div className="diag-opts-row">
                     <Opt label="Menos de 1h" selected={data.horasWhatsapp === 'menos-1h'} onClick={() => set('horasWhatsapp', 'menos-1h')} />
                     <Opt label="1 a 2h" selected={data.horasWhatsapp === '1-2h'} onClick={() => set('horasWhatsapp', '1-2h')} />
@@ -701,7 +701,7 @@ export default function Diagnostico() {
             <div className="diag-step">
               <StepHead emoji="🎯" title="Última parte: o que separa quem tá curioso de quem quer resolver de verdade" sub="Só pra montar a proposta certa pro seu momento. Nossos projetos começam em R$999,90." />
               <div className="diag-section">
-                <Q label="Pra entregar a solução completa que resolve isso, quanto faz sentido investir agora?">
+                <Q label="Quando for resolver isso, qual faixa de investimento cabe hoje?">
                   <div className="diag-opts-col">
                     <Opt label="A partir de R$999, quero começar enxuto" selected={data.orcamento === 'ate-1k'} onClick={() => set('orcamento', 'ate-1k')} />
                     <Opt label="R$1 mil a R$3 mil" selected={data.orcamento === '1-3k'} onClick={() => set('orcamento', '1-3k')} />
@@ -714,8 +714,8 @@ export default function Diagnostico() {
                   <div className="diag-opts-col">
                     <Opt label="Sou eu, decido sozinho" selected={data.decisor === 'sozinho'} onClick={() => set('decisor', 'sozinho')} />
                     <Opt label="Eu e mais um sócio" selected={data.decisor === 'socio'} onClick={() => set('decisor', 'socio')} />
-                    <Opt label="Preciso alinhar com sócio/família antes" selected={data.decisor === 'alinhar'} onClick={() => set('decisor', 'alinhar')} />
-                    <Opt label="Não sou eu, pesquiso pra empresa ou meu chefe" selected={data.decisor === 'nao-sou-eu'} onClick={() => set('decisor', 'nao-sou-eu')} />
+                    <Opt label="Preciso alinhar com sócio ou família antes" selected={data.decisor === 'alinhar'} onClick={() => set('decisor', 'alinhar')} />
+                    <Opt label="Levo pra quem decide na empresa" selected={data.decisor === 'nao-sou-eu'} onClick={() => set('decisor', 'nao-sou-eu')} />
                   </div>
                 </Q>
                 <Q label="Pra quando você quer isso de pé?">
@@ -726,10 +726,13 @@ export default function Diagnostico() {
                     <Opt label="Só pesquisando por enquanto" selected={data.urgencia === 'pesquisando'} onClick={() => set('urgencia', 'pesquisando')} />
                   </div>
                 </Q>
-                <Q label="Nos últimos 30 dias, você perdeu algum cliente ou venda por algum desses motivos? (opcional)">
-                  <div className="diag-opts-row">
-                    <Opt label="Sim, e me incomodou" selected={data.perdaRecente === 'sim'} onClick={() => set('perdaRecente', 'sim')} />
-                    <Opt label="Acho que sim" selected={data.perdaRecente === 'acho'} onClick={() => set('perdaRecente', 'acho')} />
+                {/* O "desses motivos" era órfão: não havia lista nenhuma na tela.
+                    Nomear os três motivos resolve a frase e faz o trabalho pesado da
+                    pergunta, porque cada um aciona a lembrança de uma perda concreta. */}
+                <Q label="Nos últimos 30 dias, você perdeu alguma venda por demora pra responder, por não te acharem na internet ou por algo ter se perdido no caminho? (opcional)">
+                  <div className="diag-opts-col">
+                    <Opt label="Sim, e isso me incomodou" selected={data.perdaRecente === 'sim'} onClick={() => set('perdaRecente', 'sim')} />
+                    <Opt label="Provavelmente sim, mas não sei dizer quanto" selected={data.perdaRecente === 'acho'} onClick={() => set('perdaRecente', 'acho')} />
                     <Opt label="Não que eu tenha percebido" selected={data.perdaRecente === 'nao-percebi'} onClick={() => set('perdaRecente', 'nao-percebi')} />
                   </div>
                 </Q>
