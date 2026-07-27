@@ -741,10 +741,12 @@ export default function Diagnostico() {
           {step === 'done' && (
             <div className="diag-result">
               <div className="diag-result__top">
-                <div className="diag-result__icon">🔎</div>
-                <h1 className="diag-result__title">Pronto, {data.nome.split(' ')[0] || 'tudo certo'}! Já dá pra ver algumas travas</h1>
+                <div className="diag-result__icon">✅</div>
+                <h1 className="diag-result__title">
+                  Obrigado{data.nome.split(' ')[0] ? `, ${data.nome.split(' ')[0]}` : ''}! Recebemos tudo
+                </h1>
                 <p className="diag-result__desc">
-                  Só com o que você respondeu, identificamos alguns pontos que estão segurando o seu crescimento
+                  Só com o que você respondeu já dá pra ver alguns pontos que estão segurando o seu crescimento
                   {data.nomeEmpresa ? ` na ${data.nomeEmpresa}` : ''}:
                 </p>
               </div>
@@ -761,23 +763,27 @@ export default function Diagnostico() {
                 ))}
               </div>
 
+              {/* Nada aqui obriga a chamar no WhatsApp: já temos o número dele.
+                  O botão existe pra quem já está decidido e quer adiantar. */}
               <div className="diag-result__box">
-                <div className="diag-result__service-name">💡 A boa notícia</div>
+                <div className="diag-result__service-name">💡 O que acontece agora</div>
                 <p className="diag-result__cta-copy">
-                  Cada uma dessas travas tem solução, e a gente já sabe exatamente como destravar no seu caso.
-                  Chama no WhatsApp que eu te mostro o passo a passo (e quanto isso tá te custando por mês).
+                  Já estamos com o seu WhatsApp. Nosso time analisa essas respostas e te procura
+                  por lá com o passo a passo pra destravar cada ponto, e quanto isso está te
+                  custando por mês. Você não precisa fazer mais nada.
                 </p>
               </div>
 
               <div className="diag-result__actions">
                 <a href={waUrl} target="_blank" rel="noopener noreferrer" className="diag-cta-wa">
-                  💬 Quero destravar meu negócio
+                  💬 Prefiro adiantar, quero falar agora
                 </a>
                 <Link to="/" className="diag-cta-back">← Voltar ao site</Link>
               </div>
 
               <div className="diag-result__note">
-                Sem compromisso. Você fala direto com quem vai desenvolver, sem call center e sem enrolação.
+                Atendimento das 9h às 22h. Sem compromisso, e você fala direto com quem vai
+                desenvolver, sem call center e sem enrolação.
               </div>
             </div>
           )}
