@@ -495,7 +495,11 @@ export default function Diagnostico() {
         <div className="diag-pbar">
           <div className="diag-pbar__fill" style={{ width: `${pct}%` }} />
         </div>
-        <Link to="/" className="diag-back-link">← Voltar ao site</Link>
+        {/* Some na tela final: ali o único caminho é o WhatsApp, e um convite
+            explícito pra sair competiria com isso dentro da janela de 5s. */}
+        {step !== 'done' && (
+          <Link to="/" className="diag-back-link">← Voltar ao site</Link>
+        )}
       </header>
 
       <main className="diag-main">
@@ -828,14 +832,16 @@ export default function Diagnostico() {
                 </div>
               </div>
 
-              {/* Botão manual: rede de segurança pra quando o navegador bloquear
-                  o redirecionamento automático, o que acontece em navegador
-                  dentro de app (Instagram, Facebook) com alguma frequência. */}
+              {/* Só o caminho pro WhatsApp. O "Voltar ao site" saiu de
+                  propósito: ele competia com o único objetivo desta tela e
+                  dava rota de fuga dentro da janela de 5 segundos.
+                  O botão continua aqui como rede de segurança, porque
+                  navegador dentro de app (Instagram, Facebook) bloqueia
+                  redirecionamento automático com alguma frequência. */}
               <div className="diag-result__actions">
                 <a href={waUrl} className="diag-cta-wa">
                   💬 Abrir o WhatsApp agora
                 </a>
-                <Link to="/" className="diag-cta-back">← Voltar ao site</Link>
               </div>
 
               <div className="diag-result__note">
