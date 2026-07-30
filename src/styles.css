@@ -1643,6 +1643,32 @@ ul { list-style: none; }
 .diag-trava__desc { font-size: 13px; color: var(--text-2); line-height: 1.55; }
 .diag-result__cta-copy { font-size: 14px; color: var(--text-2); line-height: 1.65; }
 
+/* Contagem regressiva até o encaminhamento pro WhatsApp. O número grande
+   existe pra ser lido de relance: em 5 segundos ninguém lê frase inteira. */
+.diag-countdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.diag-countdown__num {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  /* tabular-nums evita o número "pulando" de largura a cada troca */
+  font-variant-numeric: tabular-nums;
+}
+.diag-countdown__txt { font-size: 13px; color: var(--text-2); }
+
 /* ── ADMIN PANEL ──────────────────────────────────────────────── */
 .admin-page {
   min-height: 100vh; background: var(--bg-dark);

@@ -101,9 +101,23 @@ function toDados(d: FD): LeadDados {
 
 const WA_NUMBER = '5588998030247'
 
-function buildLeadMsg(d: FD): string {
+/**
+ * Mensagem que já vai escrita no WhatsApp do lead.
+ *
+ * Ela existe pra que o atendente abra a conversa sabendo QUEM é e O QUE ele
+ * quer, sem precisar perguntar de novo o que a pessoa acabou de responder.
+ * Repetir pergunta logo na primeira mensagem é o jeito mais rápido de fazer
+ * o lead achar que ninguém leu o formulário dele.
+ */
+function buildLeadMsg(d: FD, qtdTravas: number): string {
   const empresa = d.nomeEmpresa ? `, da *${d.nomeEmpresa}*` : ''
-  return encodeURIComponent(`Olá! Me chamo *${d.nome}*${empresa}. Acabei de fazer o diagnóstico no site de vocês 👋`)
+  const travas =
+    qtdTravas > 0
+      ? ` Vi que apareceram ${qtdTravas} ponto${qtdTravas === 1 ? '' : 's'} pra destravar e queria entender melhor.`
+      : ''
+  return encodeURIComponent(
+    `Olá! Me chamo *${d.nome}*${empresa}. Acabei de preencher o diagnóstico no site de vocês.${travas}`
+  )
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -332,6 +346,8 @@ export default function Diagnostico() {
   const finalRec = useRef<Rec>('site')
   const finalTemp = useRef<string>('MORNO')
   const doneFired = useRef(false)
+  /** Contagem regressiva até o encaminhamento automático pro WhatsApp. */
+  const [segundos, setSegundos] = useState(5)
   // o Lead é o evento que a campanha otimiza — não pode contar duas vezes.
   // Sem isto, voltar do filtro pro contato e avançar de novo dispara de novo,
   // inflando a conversão e ensinando o algoritmo errado.
@@ -357,6 +373,7 @@ export default function Diagnostico() {
       }, utm.current.event_id)
     }
   }, [step, data])
+
 
   const set = (f: keyof FD, v: unknown) => setData(d => ({ ...d, [f]: v }))
   const toggle = (field: 'canais' | 'baseClientes', val: string) => setData(d => ({
@@ -441,7 +458,27 @@ export default function Diagnostico() {
   const { cur, tot } = progress(step)
   const pct = step === 'done' ? 100 : step === 'intro' ? 0 : Math.round((cur / tot) * 100)
   const travas = step === 'done' ? generateTravas(toDados(data)) : []
-  const waUrl = `https://wa.me/${WA_NUMBER}?text=${buildLeadMsg(data)}`
+  const waUrl = `https://wa.me/${WA_NUMBER}?text=${buildLeadMsg(data, travas.length)}`
+
+  /* ── Encaminhamento pro WhatsApp ───────────────────────────────────
+     O briefing JÁ está salvo quando esta tela aparece: persist('parcial')
+     rodou ao sair do contato e persist('completo') ao sair do filtro. Então
+     quem não chegar no WhatsApp continua sendo lead nosso, com telefone e
+     diagnóstico completo. O redirecionamento é ganho, nunca condição.
+
+     Cinco segundos de propósito: tempo de entender o que vai acontecer, sem
+     dar tempo de desistir. Sem contador, o salto parece sequestro de página. */
+  useEffect(() => {
+    if (step !== 'done') return
+    if (segundos <= 0) {
+      // mesma aba: no celular abre o app direto, e window.open depois de um
+      // atraso é justamente o padrão que bloqueador de pop-up mata
+      window.location.href = waUrl
+      return
+    }
+    const t = setTimeout(() => setSegundos((s) => s - 1), 1000)
+    return () => clearTimeout(t)
+  }, [step, segundos, waUrl])
 
   const nextLabel = step === 'intro' ? 'Começar meu diagnóstico →'
     : step === 'contato' ? 'Continuar →'
@@ -749,44 +786,62 @@ export default function Diagnostico() {
                   Obrigado{data.nome.split(' ')[0] ? `, ${data.nome.split(' ')[0]}` : ''}! Recebemos tudo
                 </h1>
                 <p className="diag-result__desc">
-                  Só com o que você respondeu já dá pra ver alguns pontos que estão segurando o seu crescimento
-                  {data.nomeEmpresa ? ` na ${data.nomeEmpresa}` : ''}:
+                  {travas.length > 0 ? (
+                    <>
+                      Encontramos <strong>{travas.length} ponto{travas.length === 1 ? '' : 's'}</strong>{' '}
+                      segurando o crescimento{data.nomeEmpresa ? ` da ${data.nomeEmpresa}` : ' do seu negócio'}:
+                    </>
+                  ) : (
+                    <>Suas respostas já estão com a nossa equipe.</>
+                  )}
                 </p>
               </div>
 
+              {/* Só os TÍTULOS das travas. O detalhe fica pra conversa: mostrar
+                  tudo aqui tiraria o motivo de ele continuar, e são 5 segundos
+                  de tela, tempo de ler título e não parágrafo. */}
               <div className="diag-travas">
                 {travas.map((t, i) => (
                   <div key={i} className="diag-trava">
                     <span className="diag-trava__num">{i + 1}</span>
                     <div className="diag-trava__body">
                       <div className="diag-trava__title">{t.titulo}</div>
-                      <div className="diag-trava__desc">{t.detalhe}</div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Nada aqui obriga a chamar no WhatsApp: já temos o número dele.
-                  O botão existe pra quem já está decidido e quer adiantar. */}
               <div className="diag-result__box">
-                <div className="diag-result__service-name">💡 O que acontece agora</div>
+                <div className="diag-result__service-name">
+                  💬 Estamos te levando pro nosso WhatsApp
+                </div>
                 <p className="diag-result__cta-copy">
-                  Já estamos com o seu WhatsApp. Nosso time analisa essas respostas e te procura
-                  por lá com o passo a passo pra destravar cada ponto, e quanto isso está te
-                  custando por mês. Você não precisa fazer mais nada.
+                  É por lá que a gente te mostra o que fazer em cada um desses pontos e
+                  quanto eles estão te custando por mês. A sua mensagem já vai escrita,
+                  basta enviar.
                 </p>
+                <div className="diag-countdown">
+                  <span className="diag-countdown__num">{segundos}</span>
+                  <span className="diag-countdown__txt">
+                    {segundos > 0 ? 'Encaminhando em instantes...' : 'Abrindo o WhatsApp...'}
+                  </span>
+                </div>
               </div>
 
+              {/* Botão manual: rede de segurança pra quando o navegador bloquear
+                  o redirecionamento automático, o que acontece em navegador
+                  dentro de app (Instagram, Facebook) com alguma frequência. */}
               <div className="diag-result__actions">
-                <a href={waUrl} target="_blank" rel="noopener noreferrer" className="diag-cta-wa">
-                  💬 Prefiro adiantar, quero falar agora
+                <a href={waUrl} className="diag-cta-wa">
+                  💬 Abrir o WhatsApp agora
                 </a>
                 <Link to="/" className="diag-cta-back">← Voltar ao site</Link>
               </div>
 
               <div className="diag-result__note">
-                Atendimento das 9h às 22h. Sem compromisso, e você fala direto com quem vai
-                desenvolver, sem call center e sem enrolação.
+                Atendimento das 9h às 22h. Suas respostas já estão salvas com a nossa
+                equipe, então se algo der errado no caminho a gente te procura do mesmo
+                jeito.
               </div>
             </div>
           )}
