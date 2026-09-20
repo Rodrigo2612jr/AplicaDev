@@ -3,6 +3,8 @@ import logoIcon from '../assets/logo-icon-clean.png'
 import { upsertLead } from '../lib/db'
 import type { LeadDados, Rec, Temperatura } from '../lib/db'
 import { Opt, Multi, Q, cryptoId, WA_NUMBER } from './Diagnostico'
+import { pushLeadToKanban } from '../lib/kanban'
+import type { KanbanPayload } from '../lib/kanban'
 
 /* ═══════════════════════════════════════════════════════════════
    FORMULÁRIO CURTO DE EVENTO (QR do workshop CFK)
@@ -114,6 +116,25 @@ function resumo(d: FD): string[] {
   return linhas.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`)
 }
 
+/** Card do Kanban: as mesmas linhas do resumo, uma resposta por linha. */
+function toKanban(d: FD): KanbanPayload {
+  const sec = '🎤 Workshop CFK'
+  return {
+    formType: EVENTO,
+    contactName: d.nome.trim() || undefined,
+    softwareName: d.negocio.trim() || d.nome.trim() || 'Lead workshop CFK',
+    phone: d.whatsapp.trim() || undefined,
+    answers: [
+      { section: sec, key: 'origem', label: 'Origem', value: 'Workshop CFK (QR)' },
+      { section: sec, key: 'whatsapp', label: 'WhatsApp', value: d.whatsapp.trim() },
+      ...resumo(d).map((l, i) => {
+        const [label, ...resto] = l.split(': ')
+        return { section: sec, key: `wk_${i}`, label, value: resto.join(': ') }
+      }),
+    ].filter(a => a.value),
+  }
+}
+
 function toDados(d: FD): LeadDados {
   return {
     serviceChoice: '', empresaTipo: 'clinica', nicho: 'Nail design / manicure',
@@ -161,14 +182,22 @@ export default function Workshop() {
     // sem nome nem telefone não há lead pra gravar (caso "não tenho interesse" em branco)
     if (d.nome.trim() || digitos(d.whatsapp)) {
       setSaving(true)
-      // teto de 8s: wifi de evento trava requisição sem devolver erro
-      const { error } = await Promise.race([upsertLead({
-        id: leadId.current,
-        nome: d.nome || 'Sem nome', whatsapp: d.whatsapp, nome_empresa: d.negocio,
-        rec: recDe(d.solucoes), dados: toDados(d), status: 'completo',
-        temperatura: TEMP[d.interesse] ?? 'MORNO', score: null,
-        utm: { utm_source: EVENTO, utm_medium: 'qr' },
-      }), new Promise<{ error: string | null }>(r => setTimeout(() => r({ error: 'timeout' }), 8000))])
+      // Dois destinos em paralelo, basta UM responder: o Kanban é o sistema vivo,
+      // o Supabase alimenta o /admin. Teto de 8s: wifi de evento trava
+      // requisição sem devolver erro.
+      const teto = <T,>(pr: Promise<T>, falha: T) =>
+        Promise.race([pr, new Promise<T>(r => setTimeout(() => r(falha), 8000))])
+      const [banco, kanban] = await Promise.all([
+        teto(upsertLead({
+          id: leadId.current,
+          nome: d.nome || 'Sem nome', whatsapp: d.whatsapp, nome_empresa: d.negocio,
+          rec: recDe(d.solucoes), dados: toDados(d), status: 'completo',
+          temperatura: TEMP[d.interesse] ?? 'MORNO', score: null,
+          utm: { utm_source: EVENTO, utm_medium: 'qr' },
+        }), { error: 'timeout' } as { error: string | null }),
+        teto(pushLeadToKanban(toKanban(d)), { ok: false }),
+      ])
+      const error = banco.error && !kanban.ok
       setSaving(false)
       // Falha de banco ou de rede NUNCA prende a pessoa no formulário: num evento
       // ela desiste. A tela final vira "manda pelo WhatsApp", com tudo no texto.
