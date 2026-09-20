@@ -126,6 +126,9 @@ function toKanban(d: FD): KanbanPayload {
     phone: d.whatsapp.trim() || undefined,
     answers: [
       { section: sec, key: 'origem', label: 'Origem', value: 'Workshop CFK (QR)' },
+      // companyName é OBRIGATÓRIO no submitBriefing do Kanban (sem ele: HTTP 400)
+      { section: sec, key: 'companyName', label: 'Empresa', value: d.negocio.trim() || `${d.nome.trim() || 'Lead'} (workshop CFK)` },
+      { section: sec, key: 'contactName', label: 'Nome', value: d.nome.trim() },
       { section: sec, key: 'whatsapp', label: 'WhatsApp', value: d.whatsapp.trim() },
       ...resumo(d).map((l, i) => {
         const [label, ...resto] = l.split(': ')
