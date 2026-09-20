@@ -131,6 +131,8 @@ export default function Workshop() {
   const [tentou, setTentou] = useState(false)
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
+  // false = o banco não respondeu: as respostas só chegam se ela mandar pelo WhatsApp
+  const [salvou, setSalvou] = useState(true)
   const leadId = useRef(cryptoId())
 
   const set = (f: keyof FD, v: string) => setD(x => ({ ...x, [f]: v }))
@@ -159,15 +161,18 @@ export default function Workshop() {
     // sem nome nem telefone não há lead pra gravar (caso "não tenho interesse" em branco)
     if (d.nome.trim() || digitos(d.whatsapp)) {
       setSaving(true)
-      const { error } = await upsertLead({
+      // teto de 8s: wifi de evento trava requisição sem devolver erro
+      const { error } = await Promise.race([upsertLead({
         id: leadId.current,
         nome: d.nome || 'Sem nome', whatsapp: d.whatsapp, nome_empresa: d.negocio,
         rec: recDe(d.solucoes), dados: toDados(d), status: 'completo',
         temperatura: TEMP[d.interesse] ?? 'MORNO', score: null,
         utm: { utm_source: EVENTO, utm_medium: 'qr' },
-      })
+      }), new Promise<{ error: string | null }>(r => setTimeout(() => r({ error: 'timeout' }), 8000))])
       setSaving(false)
-      if (error) { setErro('Não consegui enviar. Confere a internet e toca de novo.'); return }
+      // Falha de banco ou de rede NUNCA prende a pessoa no formulário: num evento
+      // ela desiste. A tela final vira "manda pelo WhatsApp", com tudo no texto.
+      if (error) setSalvou(false)
     }
     setDone(true)
     window.scrollTo({ top: 0 })
@@ -178,9 +183,13 @@ export default function Workshop() {
   const falta = (id: string) => (ids.includes(id) ? ' wk-falta' : '')
 
   const primeiroNome = d.nome.trim().split(' ')[0]
-  const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
+  const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent([
     `Oi! Sou ${d.nome.trim()}, estava no workshop da CFK e quero meu diagnóstico.`,
-  )}`
+    '',
+    ...(d.negocio.trim() ? [`Negócio: ${d.negocio.trim()}`] : []),
+    ...resumo(d),
+  ].join('\n'))}`
+  const falhou = !salvou && d.interesse !== 'nao'
 
   return (
     <div className="diag-page wk">
@@ -198,17 +207,19 @@ export default function Workshop() {
               <div className="diag-step__head">
                 <span className="diag-step__emoji">💚</span>
                 <h1 className="diag-step__title">
-                  {d.interesse === 'nao' ? 'Obrigado por responder!' : `Recebemos${primeiroNome ? `, ${primeiroNome}` : ''}!`}
+                  {d.interesse === 'nao' ? 'Obrigado por responder!' : falhou ? `Falta um toque${primeiroNome ? `, ${primeiroNome}` : ''}!` : `Recebemos${primeiroNome ? `, ${primeiroNome}` : ''}!`}
                 </h1>
                 <p className="diag-step__sub">
                   {d.interesse === 'nao'
                     ? 'Bom workshop. Se mudar de ideia, é só procurar a gente no intervalo.'
-                    : 'A gente te chama no WhatsApp com o seu diagnóstico. Seu desconto de 20% e a plaquinha NFC de brinde já estão garantidos.'}
+                    : falhou
+                      ? 'Toca no botão abaixo pra mandar suas respostas pelo WhatsApp. Já vai tudo escrito, é só enviar. Assim você garante o diagnóstico, os 20% e a plaquinha NFC de brinde.'
+                      : 'A gente te chama no WhatsApp com o seu diagnóstico. Seu desconto de 20% e a plaquinha NFC de brinde já estão garantidos.'}
                 </p>
               </div>
               {d.interesse !== 'nao' && (
                 <div className="diag-nav">
-                  <a className="diag-nav__next" href={waUrl} target="_blank" rel="noreferrer">Quero adiantar pelo WhatsApp</a>
+                  <a className="diag-nav__next" href={waUrl} target="_blank" rel="noreferrer">{falhou ? 'Enviar pelo WhatsApp' : 'Quero adiantar pelo WhatsApp'}</a>
                 </div>
               )}
             </div>
