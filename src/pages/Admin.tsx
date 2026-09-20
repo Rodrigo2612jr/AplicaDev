@@ -261,6 +261,13 @@ export default function Admin() {
                   <div className="admin-card__body">
                     {origem && <div className="admin-origem">🎯 Origem: {origem}</div>}
 
+                    {lead.dados.workshop && lead.dados.workshop.length > 0 && (
+                      <div className="admin-diag-section">
+                        <h3>🎤 Respostas do evento ({lead.dados.evento})</h3>
+                        <ul className="admin-diag-list">{lead.dados.workshop.map((r, i) => <li key={i}>{r}</li>)}</ul>
+                      </div>
+                    )}
+
                     <div className="admin-diag-section">
                       <h3>📊 Situação Atual</h3>
                       <ul className="admin-diag-list">{diag.situacao.map((s, i) => <li key={i}>{s}</li>)}</ul>

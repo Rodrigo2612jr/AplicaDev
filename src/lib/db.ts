@@ -52,6 +52,11 @@ export interface LeadDados {
   appPlataforma?: string
   appDescricao?: string
   sistemaDescricao?: string
+
+  // ── Formulário curto de evento (/workshop): respostas já em texto legível,
+  //    uma linha por pergunta. O painel só lista. ──
+  evento?: string
+  workshop?: string[]
 }
 
 /**
@@ -176,6 +181,8 @@ function sanitizeDados(d: LeadDados): LeadDados {
     ...(d.appPlataforma !== undefined && { appPlataforma: s(d.appPlataforma) }),
     ...(d.appDescricao !== undefined && { appDescricao: s(d.appDescricao) }),
     ...(d.sistemaDescricao !== undefined && { sistemaDescricao: s(d.sistemaDescricao) }),
+    ...(d.evento !== undefined && { evento: s(d.evento) }),
+    ...(d.workshop !== undefined && { workshop: sArr(d.workshop) }),
   }
 }
 

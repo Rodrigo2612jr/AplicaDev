@@ -5,6 +5,7 @@ import logoIcon from './assets/logo-icon-clean.png'
 import heroBgSm from './assets/hero-bg-sm.webp'
 import heroBgLg from './assets/hero-bg-lg.webp'
 import Diagnostico from './pages/Diagnostico'
+import Workshop from './pages/Workshop'
 
 // Diagnostico fica no bundle inicial de propósito: é onde o tráfego pago cai
 // direto, e um chunk separado aí custaria um round-trip antes do formulário
@@ -1084,6 +1085,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/diagnostico" element={<Diagnostico />} />
+        <Route path="/workshop" element={<Workshop />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/privacidade" element={<Privacidade />} />

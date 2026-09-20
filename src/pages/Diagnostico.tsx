@@ -99,7 +99,7 @@ function toDados(d: FD): LeadDados {
   }
 }
 
-const WA_NUMBER = '5588998030247'
+export const WA_NUMBER = '5588998030247'
 
 /**
  * Mensagem que já vai escrita no WhatsApp do lead.
@@ -294,7 +294,7 @@ function atualizaCookiesPixel(u: UtmDados): UtmDados {
 /* ═══════════════════════════════════════════════════════════════
    UI COMPONENTS
 ═══════════════════════════════════════════════════════════════ */
-function Opt({ label, icon, desc, selected, onClick }: {
+export function Opt({ label, icon, desc, selected, onClick }: {
   label: string; icon?: string; desc?: string; selected: boolean; onClick: () => void
 }) {
   return (
@@ -309,7 +309,7 @@ function Opt({ label, icon, desc, selected, onClick }: {
   )
 }
 
-function Multi({ label, icon, selected, onClick }: {
+export function Multi({ label, icon, selected, onClick }: {
   label: string; icon?: string; selected: boolean; onClick: () => void
 }) {
   return (
@@ -321,7 +321,7 @@ function Multi({ label, icon, selected, onClick }: {
   )
 }
 
-function Q({ label, children }: { label: string; children: React.ReactNode }) {
+export function Q({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="diag-q">
       <div className="diag-q__label">{label}</div>
@@ -889,7 +889,7 @@ function StepHead({ emoji, title, sub }: { emoji: string; title: string; sub: st
   )
 }
 
-function cryptoId(): string {
+export function cryptoId(): string {
   try {
     if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID()
   } catch { /* fallback abaixo */ }
