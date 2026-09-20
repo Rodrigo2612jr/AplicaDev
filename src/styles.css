@@ -2145,3 +2145,19 @@ ul { list-style: none; }
   min-height: 100vh;
   background: #04060a;
 }
+
+/* ── /workshop: formulário de evento, respondido em pé no celular ── */
+/* 16px no campo: abaixo disso o Safari do iPhone dá zoom ao focar e não volta */
+.wk .diag-input { font-size: 16px; }
+.wk .diag-opt { min-height: 52px; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.wk .diag-fields { margin-bottom: 28px; }
+.wk .diag-nav { margin-top: 28px; }
+.wk .diag-nav__next { width: 100%; margin-left: 0; padding: 16px 28px; font-size: 17px; text-align: center; justify-content: center; text-decoration: none; touch-action: manipulation; }
+.wk .diag-nav__next:hover { transform: none; }
+.wk .diag-input.wk-falta { border-color: #c0392b; box-shadow: 0 0 0 3px rgba(192,57,43,.12); }
+.wk .diag-opts-col.wk-falta { outline: 2px solid #c0392b; outline-offset: 6px; border-radius: 12px; }
+.wk-erro { color: #c0392b; font-weight: 600; font-size: 15px; line-height: 1.4; margin-top: 18px; }
+@media (max-width: 480px) {
+  .wk .diag-main { padding: 16px 12px calc(40px + env(safe-area-inset-bottom)); }
+  .wk .diag-card { padding: 28px 18px; }
+}

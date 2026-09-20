@@ -78,13 +78,13 @@ type FD = typeof INIT
 const digitos = (v: string) => v.replace(/\D/g, '')
 
 /** O que falta preencher. "Não tenho interesse" libera tudo. */
-function faltando(d: FD): string[] {
+function faltando(d: FD): { id: string; label: string }[] {
   if (d.interesse === 'nao') return []
-  const f: string[] = []
-  if (!d.nome.trim()) f.push('seu nome')
-  if (digitos(d.whatsapp).length < 10) f.push('seu WhatsApp com DDD')
-  if (!d.perfil) f.push('como você trabalha hoje')
-  if (!d.interesse) f.push('a última pergunta')
+  const f: { id: string; label: string }[] = []
+  if (!d.nome.trim()) f.push({ id: 'wk-nome', label: 'seu nome' })
+  if (digitos(d.whatsapp).length < 10) f.push({ id: 'wk-whatsapp', label: 'seu WhatsApp com DDD' })
+  if (!d.perfil) f.push({ id: 'wk-perfil', label: 'como você trabalha hoje' })
+  if (!d.interesse) f.push({ id: 'wk-interesse', label: 'a última pergunta' })
   return f
 }
 
@@ -128,6 +128,7 @@ function toDados(d: FD): LeadDados {
 export default function Workshop() {
   const [d, setD] = useState<FD>(INIT)
   const [erro, setErro] = useState('')
+  const [tentou, setTentou] = useState(false)
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
   const leadId = useRef(cryptoId())
@@ -147,7 +148,13 @@ export default function Workshop() {
 
   const enviar = async () => {
     const f = faltando(d)
-    if (f.length) { setErro(`Falta: ${f.join(', ')}.`); return }
+    setTentou(true)
+    if (f.length) {
+      setErro(`Falta: ${f.map(x => x.label).join(', ')}.`)
+      // leva até o primeiro campo que falta: o botão fica no fim e o campo lá em cima
+      document.getElementById(f[0].id)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
     setErro('')
     // sem nome nem telefone não há lead pra gravar (caso "não tenho interesse" em branco)
     if (d.nome.trim() || digitos(d.whatsapp)) {
@@ -166,13 +173,17 @@ export default function Workshop() {
     window.scrollTo({ top: 0 })
   }
 
+  // depois da 1ª tentativa, marca em vermelho o que falta (o aviso em texto fica lá no fim)
+  const ids = tentou ? faltando(d).map(x => x.id) : []
+  const falta = (id: string) => (ids.includes(id) ? ' wk-falta' : '')
+
   const primeiroNome = d.nome.trim().split(' ')[0]
   const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
     `Oi! Sou ${d.nome.trim()}, estava no workshop da CFK e quero meu diagnóstico.`,
   )}`
 
   return (
-    <div className="diag-page">
+    <div className="diag-page wk">
       <header className="diag-header">
         <span className="diag-logo">
           <img src={logoIcon} alt="AplicaDev" />
@@ -214,35 +225,35 @@ export default function Workshop() {
               <div className="diag-fields">
                 <div className="diag-field">
                   <label className="diag-label">Seu nome</label>
-                  <input className="diag-input" type="text" autoComplete="name" placeholder="Como te chamam" value={d.nome} onChange={e => set('nome', e.target.value)} />
+                  <input id="wk-nome" className={`diag-input${falta('wk-nome')}`} type="text" autoComplete="name" maxLength={80} enterKeyHint="next" placeholder="Como te chamam" value={d.nome} onChange={e => set('nome', e.target.value)} />
                 </div>
                 <div className="diag-field">
                   <label className="diag-label">Seu WhatsApp <span className="diag-hint">(com DDD)</span></label>
-                  <input className="diag-input" type="tel" autoComplete="tel" placeholder="(88) 9 9999-9999" value={d.whatsapp} onChange={e => set('whatsapp', e.target.value)} />
+                  <input id="wk-whatsapp" className={`diag-input${falta('wk-whatsapp')}`} type="tel" inputMode="tel" autoComplete="tel" maxLength={20} enterKeyHint="next" placeholder="(88) 9 9999-9999" value={d.whatsapp} onChange={e => set('whatsapp', e.target.value)} />
                 </div>
                 <div className="diag-field">
                   <label className="diag-label">Seu Instagram de trabalho <span className="diag-hint">(opcional)</span></label>
-                  <input className="diag-input" type="text" autoCapitalize="none" placeholder="@seuperfil" value={d.instagram} onChange={e => set('instagram', e.target.value)} />
+                  <input className="diag-input" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={60} placeholder="@seuperfil" value={d.instagram} onChange={e => set('instagram', e.target.value)} />
                 </div>
                 <div className="diag-field">
                   <label className="diag-label">Nome do seu negócio ou como você se apresenta <span className="diag-hint">(opcional)</span></label>
-                  <input className="diag-input" type="text" placeholder="Ex: Studio Ju Nails, ou só Ju Nail Designer" value={d.negocio} onChange={e => set('negocio', e.target.value)} />
+                  <input className="diag-input" type="text" maxLength={80} placeholder="Ex: Studio Ju Nails" value={d.negocio} onChange={e => set('negocio', e.target.value)} />
                 </div>
                 <div className="diag-field">
                   <label className="diag-label">Cidade e bairro onde atende <span className="diag-hint">(opcional)</span></label>
-                  <input className="diag-input" type="text" placeholder="Cidade, bairro" value={d.cidade} onChange={e => set('cidade', e.target.value)} />
+                  <input className="diag-input" type="text" maxLength={80} placeholder="Cidade, bairro" value={d.cidade} onChange={e => set('cidade', e.target.value)} />
                 </div>
               </div>
 
               <div className="diag-section">
-              <Q label="Como você trabalha hoje?"><div className="diag-opts-col">{opts('perfil', PERFIL)}</div></Q>
+              <Q label="Como você trabalha hoje?"><div id="wk-perfil" className={`diag-opts-col${falta('wk-perfil')}`}>{opts('perfil', PERFIL)}</div></Q>
               <Q label="Quantas clientes você atende por semana?"><div className="diag-opts-col">{opts('volume', VOLUME)}</div></Q>
               <Q label="Como cliente NOVA costuma te achar? (pode marcar mais de uma)"><div className="diag-opts-col">{multis('canais', CANAIS)}</div></Q>
               <Q label="Como você marca horário?"><div className="diag-opts-col">{opts('agenda', AGENDA)}</div></Q>
               <Q label="Você tem site?"><div className="diag-opts-col">{opts('site', SITE)}</div></Q>
               <Q label="Se pesquisar seu nome no Google, você aparece?"><div className="diag-opts-col">{opts('google', GOOGLE)}</div></Q>
 
-              <Q label="Tem interesse em alguma solução digital da AplicaDev?"><div className="diag-opts-col">{opts('interesse', INTERESSE)}</div></Q>
+              <Q label="Tem interesse em alguma solução digital da AplicaDev?"><div id="wk-interesse" className={`diag-opts-col${falta('wk-interesse')}`}>{opts('interesse', INTERESSE)}</div></Q>
 
               {(d.interesse === 'sim' || d.interesse === 'talvez') && (
                   <Q label="Em quais? (pode marcar mais de uma)"><div className="diag-opts-col">{multis('solucoes', SOLUCOES)}</div></Q>
@@ -253,12 +264,12 @@ export default function Workshop() {
                   <div className="diag-fields">
                     <div className="diag-field">
                       <label className="diag-label">Quer contar mais alguma coisa? <span className="diag-hint">(opcional)</span></label>
-                      <textarea className="diag-input" rows={3} placeholder="Sua maior dificuldade hoje, uma ideia, uma dúvida" value={d.obs} onChange={e => set('obs', e.target.value)} />
+                      <textarea className="diag-input ta" rows={3} maxLength={400} placeholder="Sua maior dificuldade hoje, uma ideia, uma dúvida" value={d.obs} onChange={e => set('obs', e.target.value)} />
                     </div>
                   </div>
               )}
 
-              {erro && <p role="alert" style={{ color: '#ff8a7a', fontWeight: 600, marginTop: 16 }}>{erro}</p>}
+              {erro && <p role="alert" className="wk-erro">{erro}</p>}
 
               <div className="diag-nav">
                 <button type="button" className="diag-nav__next" onClick={enviar} disabled={saving}>

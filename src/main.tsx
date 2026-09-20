@@ -38,6 +38,19 @@ function normalizaHash() {
     }
   } catch { /* nunca impedir o app de subir */ }
 }
+
+/**
+ * Link sem '#' (aplicadev.com.br/workshop): o Vercel devolve o index.html, mas
+ * o HashRouter só lê o fragmento e mostraria a landing. Acontece com URL
+ * digitada à mão, leitor de QR que corta o '#' e link colado no WhatsApp.
+ */
+function caminhoParaHash() {
+  try {
+    const { pathname, search, hash } = window.location
+    if (pathname !== '/' && !hash) history.replaceState(null, '', '/' + search + '#' + pathname)
+  } catch { /* nunca impedir o app de subir */ }
+}
+caminhoParaHash()
 normalizaHash()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
