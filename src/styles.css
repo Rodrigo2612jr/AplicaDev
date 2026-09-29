@@ -2158,6 +2158,9 @@ ul { list-style: none; }
 .wk .diag-opts-col.wk-falta, .wk .diag-opts-multi.wk-falta { outline: 2px solid #c0392b; outline-offset: 6px; border-radius: 12px; }
 .wk .diag-section + .diag-fields { margin-top: 28px; }
 .wk .diag-opts-multi.pl-dias { grid-template-columns: repeat(3, 1fr); }
+.wk-nao-tem { display: flex; align-items: center; gap: 10px; margin-top: 10px; min-height: 32px; font-size: 15px; color: var(--text-2); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.wk-nao-tem input { width: 20px; height: 20px; margin: 0; accent-color: var(--brand); }
+.wk .diag-input:disabled { opacity: .45; }
 .wk-erro { color: #c0392b; font-weight: 600; font-size: 15px; line-height: 1.4; margin-top: 18px; }
 @media (max-width: 480px) {
   .wk .diag-main { padding: 16px 12px calc(40px + env(safe-area-inset-bottom)); }

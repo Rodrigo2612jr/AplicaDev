@@ -33,7 +33,8 @@ const INTERESSE: Opcoes = {
 }
 const TEMP: Record<string, Temperatura> = { agora: 'QUENTE', talvez: 'MORNO', nao: 'FRIO' }
 
-const INIT = { nome: '', whatsapp: '', negocio: '', instagram: '', solucoes: [] as string[], interesse: '', obs: '' }
+// semNegocio/semInsta: "ainda não tenho" dito de propósito (quem está começando), diferente de deixar em branco
+const INIT = { nome: '', whatsapp: '', negocio: '', semNegocio: false, instagram: '', semInsta: false, solucoes: [] as string[], interesse: '', obs: '' }
 type FD = typeof INIT
 
 function faltando(d: FD, rapido: boolean): { id: string; label: string }[] {
@@ -53,9 +54,10 @@ function recDe(sol: string[]): Rec {
 /** Respostas em texto legível, uma linha por pergunta (é o que o Kanban e o painel listam). */
 function resumo(d: FD): string[] {
   const linhas: [string, string][] = [
+    ['Negócio', d.semNegocio ? 'Ainda não tenho' : ''],
     ['Soluções', d.solucoes.map(s => SOLUCOES[s]).join(', ')],
     ['Interesse', INTERESSE[d.interesse]],
-    ['Instagram', d.instagram.trim()],
+    ['Instagram', d.semInsta ? 'Ainda não tenho' : d.instagram.trim()],
     ['Recado', d.obs.trim()],
   ]
   return linhas.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`)
@@ -64,7 +66,6 @@ function resumo(d: FD): string[] {
 export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { evento?: string; peca?: string }) {
   const [o] = useState(() => origemDaUrl(evento, peca))
   const [d, setD] = useState<FD>(INIT)
-  const [erro, setErro] = useState('')
   const [tentou, setTentou] = useState(false)
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
@@ -74,34 +75,29 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
   const rapido = o.de === 'cartao'
 
   const set = (f: keyof FD, v: string) => setD(x => ({ ...x, [f]: v }))
+  const naoTem = (f: 'negocio' | 'instagram', flag: 'semNegocio' | 'semInsta') =>
+    setD(x => ({ ...x, [f]: '', [flag]: !x[flag] }))
   const toggle = (v: string) => setD(x => ({
     ...x, solucoes: x.solucoes.includes(v) ? x.solucoes.filter(c => c !== v) : [...x.solucoes, v],
   }))
 
   const primeiroNome = d.nome.trim().split(' ')[0]
-  const waUrl = waLink(rapido
-    ? [
-        `Oi! Sou ${d.nome.trim()}, peguei o cartão da AplicaDev e quero saber mais.`,
-        ...(d.negocio.trim() ? [`Meu negócio: ${d.negocio.trim()}`] : []),
-        ...(d.instagram.trim() ? [`Instagram: ${d.instagram.trim()}`] : []),
-      ]
-    : [
-        `Oi! Sou ${d.nome.trim()}, estava no evento ${o.nome} e quero saber mais da AplicaDev.`,
-        '',
-        ...(d.negocio.trim() ? [`Negócio: ${d.negocio.trim()}`] : []),
-        ...resumo(d),
-      ])
+  const extra = [...(d.negocio.trim() ? [`Negócio: ${d.negocio.trim()}`] : []), ...resumo(d)]
+  const waUrl = waLink([
+    rapido
+      ? `Oi! Sou ${d.nome.trim()}, peguei o cartão da AplicaDev e quero saber mais.`
+      : `Oi! Sou ${d.nome.trim()}, estava no evento ${o.nome} e quero saber mais da AplicaDev.`,
+    ...(extra.length ? ['', ...extra] : []),
+  ])
 
   const enviar = async () => {
     const f = faltando(d, rapido)
     setTentou(true)
     if (f.length) {
-      setErro(`Falta: ${f.map(x => x.label).join(', ')}.`)
       // leva até o primeiro campo que falta: o botão fica no fim e o campo lá em cima
       document.getElementById(f[0].id)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
-    setErro('')
     setSaving(true)
     const linhas = resumo(d)
     const ok = await enviarLeadEvento({
@@ -120,8 +116,9 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
     if (rapido) window.location.href = waUrl
   }
 
-  // depois da 1ª tentativa, marca em vermelho o que falta (o aviso em texto fica lá no fim)
-  const ids = tentou ? faltando(d, rapido).map(x => x.id) : []
+  // depois da 1ª tentativa, marca em vermelho o que falta e o aviso some sozinho quando completa
+  const faltam = tentou ? faltando(d, rapido) : []
+  const ids = faltam.map(x => x.id) : []
   const falta = (id: string) => (ids.includes(id) ? ' wk-falta' : '')
 
   const frio = d.interesse === 'nao'
@@ -183,11 +180,13 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
                 </div>
                 <div className="diag-field">
                   <label className="diag-label" htmlFor="wk-negocio">Nome do seu negócio <span className="diag-hint">(se tiver)</span></label>
-                  <input id="wk-negocio" className="diag-input" type="text" maxLength={80} placeholder="Ex: Studio Ju Beleza" value={d.negocio} onChange={e => set('negocio', e.target.value)} />
+                  <input id="wk-negocio" className="diag-input" type="text" maxLength={80} placeholder="Ex: Studio Ju Beleza" value={d.negocio} disabled={d.semNegocio} onChange={e => set('negocio', e.target.value)} />
+                  <label className="wk-nao-tem"><input type="checkbox" checked={d.semNegocio} onChange={() => naoTem('negocio', 'semNegocio')} /> Ainda não tenho</label>
                 </div>
                 <div className="diag-field">
                   <label className="diag-label" htmlFor="wk-insta">Seu Instagram de trabalho <span className="diag-hint">(opcional)</span></label>
-                  <input id="wk-insta" className="diag-input" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={60} placeholder="@seuperfil" value={d.instagram} onChange={e => set('instagram', e.target.value)} />
+                  <input id="wk-insta" className="diag-input" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={60} placeholder="@seuperfil" value={d.instagram} disabled={d.semInsta} onChange={e => set('instagram', e.target.value)} />
+                  <label className="wk-nao-tem"><input type="checkbox" checked={d.semInsta} onChange={() => naoTem('instagram', 'semInsta')} /> Ainda não tenho</label>
                 </div>
               </div>
 
@@ -217,7 +216,7 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
               </div>
               </>}
 
-              {erro && <p role="alert" className="wk-erro">{erro}</p>}
+              {faltam.length > 0 && <p role="alert" className="wk-erro">Falta: {faltam.map(x => x.label).join(', ')}.</p>}
 
               <div className="diag-nav">
                 <button type="button" className="diag-nav__next" onClick={enviar} disabled={saving}>
