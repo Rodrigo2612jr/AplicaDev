@@ -5,7 +5,7 @@ import { Opt, Multi, Q, cryptoId } from './Diagnostico'
 import { origemDaUrl, cardKanban, dadosEvento, enviarLeadEvento, digitos, utmEvento, waLink } from '../lib/evento'
 
 /* ═══════════════════════════════════════════════════════════════
-   FORMULÁRIO RÁPIDO DE EVENTO (QR do banner, do cartão e do telão)
+   FORMULÁRIO RÁPIDO (QR do telão do workshop; /fale = cartão e banner)
    Pega o contato e o que a pessoa quer, pra equipe chamar no WhatsApp
    já sabendo o assunto. Página única, pra responder em pé em 1 minuto.
    Quem já quer a plaquinha vai pelo QR do acrílico (/placa).
@@ -118,7 +118,7 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
 
   // depois da 1ª tentativa, marca em vermelho o que falta e o aviso some sozinho quando completa
   const faltam = tentou ? faltando(d, rapido) : []
-  const ids = faltam.map(x => x.id) : []
+  const ids = faltam.map(x => x.id)
   const falta = (id: string) => (ids.includes(id) ? ' wk-falta' : '')
 
   const frio = d.interesse === 'nao'

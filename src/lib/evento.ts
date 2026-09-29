@@ -6,10 +6,10 @@ import type { KanbanPayload } from './kanban'
 /* ═══════════════════════════════════════════════════════════════
    LEAD DE EVENTO (QR impresso: banner, cartão, acrílico da plaquinha)
    Todo QR exposto diz o evento (?e=) e a peça (?de=). A rota dá o
-   padrão: /workshop = telão do workshop CFK; /fale = banner e /placa =
-   acrílico do stand, os dois da formatura CFK; o cartão usa
-   /fale?de=cartao. O cartão é genérico (vale fora de evento), então
-   sem ?e= ele vira o "evento" cartao-visita e não a formatura. O slug do evento vira o formType no Kanban (aba
+   padrão: /workshop = telão do workshop CFK; /placa = acrílico do stand
+   da formatura CFK; /fale = QR impresso no cartão de visita E no banner.
+   O cartão é genérico (vale fora de evento), então /fale vira o
+   "evento" cartao-visita, sem desconto no texto. O slug do evento vira o formType no Kanban (aba
    Eventos: criar lá o evento com o MESMO slug) e a peça vai no card,
    em "Origem".
    Sem pixel/CAPI de propósito: lead de evento não veio de anúncio e

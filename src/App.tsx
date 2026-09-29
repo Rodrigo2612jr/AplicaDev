@@ -1088,7 +1088,7 @@ export default function App() {
         <Route path="/diagnostico" element={<Diagnostico />} />
         <Route path="/workshop" element={<Workshop />} />
         {/* QRs impressos do stand: form curto de evento, nunca o diagnóstico dos anúncios */}
-        <Route path="/fale" element={<Workshop evento="formatura-cfk" peca="banner" />} />
+        <Route path="/fale" element={<Workshop evento="cartao-visita" peca="cartao" />} />
         <Route path="/placa" element={<Placa />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<Login />} />
