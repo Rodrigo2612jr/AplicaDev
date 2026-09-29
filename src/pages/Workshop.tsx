@@ -9,6 +9,9 @@ import { origemDaUrl, cardKanban, dadosEvento, enviarLeadEvento, digitos, utmEve
    Pega o contato e o que a pessoa quer, pra equipe chamar no WhatsApp
    já sabendo o assunto. Página única, pra responder em pé em 1 minuto.
    Quem já quer a plaquinha vai pelo QR do acrílico (/placa).
+   Cartão de visita (?de=cartao): genérico, sem evento nem desconto.
+   Só nome e WhatsApp e já cai no WhatsApp com a mensagem pronta: quem
+   pega cartão vai embora, a conversa tem que começar ali.
 ═══════════════════════════════════════════════════════════════ */
 type Opcoes = Record<string, string>
 
@@ -32,11 +35,11 @@ const TEMP: Record<string, Temperatura> = { agora: 'QUENTE', talvez: 'MORNO', na
 const INIT = { nome: '', whatsapp: '', negocio: '', instagram: '', solucoes: [] as string[], interesse: '', obs: '' }
 type FD = typeof INIT
 
-function faltando(d: FD): { id: string; label: string }[] {
+function faltando(d: FD, rapido: boolean): { id: string; label: string }[] {
   const f: { id: string; label: string }[] = []
   if (!d.nome.trim()) f.push({ id: 'wk-nome', label: 'seu nome' })
   if (digitos(d.whatsapp).length < 10) f.push({ id: 'wk-whatsapp', label: 'seu WhatsApp com DDD' })
-  if (!d.interesse) f.push({ id: 'wk-interesse', label: 'se tem interesse' })
+  if (!rapido && !d.interesse) f.push({ id: 'wk-interesse', label: 'se tem interesse' })
   return f
 }
 
@@ -67,14 +70,25 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
   // false = Kanban e banco não responderam: as respostas só chegam se ela mandar pelo WhatsApp
   const [salvou, setSalvou] = useState(true)
   const leadId = useRef(cryptoId())
+  const rapido = o.de === 'cartao'
 
   const set = (f: keyof FD, v: string) => setD(x => ({ ...x, [f]: v }))
   const toggle = (v: string) => setD(x => ({
     ...x, solucoes: x.solucoes.includes(v) ? x.solucoes.filter(c => c !== v) : [...x.solucoes, v],
   }))
 
+  const primeiroNome = d.nome.trim().split(' ')[0]
+  const waUrl = waLink(rapido
+    ? [`Oi! Sou ${d.nome.trim()}, peguei o cartão da AplicaDev e quero saber mais.`]
+    : [
+        `Oi! Sou ${d.nome.trim()}, estava no evento ${o.nome} e quero saber mais da AplicaDev.`,
+        '',
+        ...(d.negocio.trim() ? [`Negócio: ${d.negocio.trim()}`] : []),
+        ...resumo(d),
+      ])
+
   const enviar = async () => {
-    const f = faltando(d)
+    const f = faltando(d, rapido)
     setTentou(true)
     if (f.length) {
       setErro(`Falta: ${f.map(x => x.label).join(', ')}.`)
@@ -97,19 +111,14 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
     setSalvou(ok)
     setDone(true)
     window.scrollTo({ top: 0 })
+    // cartão: salvou ou não, segue direto pro WhatsApp (o nome vai na mensagem)
+    if (rapido) window.location.href = waUrl
   }
 
   // depois da 1ª tentativa, marca em vermelho o que falta (o aviso em texto fica lá no fim)
-  const ids = tentou ? faltando(d).map(x => x.id) : []
+  const ids = tentou ? faltando(d, rapido).map(x => x.id) : []
   const falta = (id: string) => (ids.includes(id) ? ' wk-falta' : '')
 
-  const primeiroNome = d.nome.trim().split(' ')[0]
-  const waUrl = waLink([
-    `Oi! Sou ${d.nome.trim()}, estava no evento ${o.nome} e quero saber mais da AplicaDev.`,
-    '',
-    ...(d.negocio.trim() ? [`Negócio: ${d.negocio.trim()}`] : []),
-    ...resumo(d),
-  ])
   const frio = d.interesse === 'nao'
 
   return (
@@ -128,19 +137,21 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
               <div className="diag-step__head">
                 <span className="diag-step__emoji">💚</span>
                 <h1 className="diag-step__title">
-                  {!salvou ? `Falta um toque${primeiroNome ? `, ${primeiroNome}` : ''}!` : `Recebemos, ${primeiroNome}!`}
+                  {rapido ? `Abrindo o WhatsApp, ${primeiroNome}!` : !salvou ? `Falta um toque${primeiroNome ? `, ${primeiroNome}` : ''}!` : `Recebemos, ${primeiroNome}!`}
                 </h1>
                 <p className="diag-step__sub">
-                  {!salvou
+                  {rapido
+                    ? 'Se não abriu sozinho, toca no botão abaixo. A mensagem já vai escrita, é só enviar que a gente responde.'
+                    : !salvou
                     ? 'Toca no botão abaixo pra mandar pelo WhatsApp. Já vai tudo escrito, é só enviar. Assim seus 20% do evento ficam garantidos.'
                     : frio
                       ? 'Quando quiser começar, é só chamar a gente no WhatsApp (11) 97645-0441.'
                       : 'A gente te chama no WhatsApp pra entender o que você precisa. Seus 20% de desconto do evento já estão garantidos.'}
                 </p>
               </div>
-              {(!salvou || !frio) && (
+              {(rapido || !salvou || !frio) && (
                 <div className="diag-nav">
-                  <a className="diag-nav__next" href={waUrl} target="_blank" rel="noreferrer">{!salvou ? 'Enviar pelo WhatsApp' : 'Quero adiantar pelo WhatsApp'}</a>
+                  <a className="diag-nav__next" href={waUrl} target="_blank" rel="noreferrer">{rapido ? 'Abrir o WhatsApp' : !salvou ? 'Enviar pelo WhatsApp' : 'Quero adiantar pelo WhatsApp'}</a>
                 </div>
               )}
             </div>
@@ -148,9 +159,11 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
             <div className="diag-step">
               <div className="diag-step__head">
                 <span className="diag-step__emoji">✨</span>
-                <h1 className="diag-step__title">20% de desconto pra quem está aqui</h1>
+                <h1 className="diag-step__title">{rapido ? 'Bora conversar?' : '20% de desconto pra quem está aqui'}</h1>
                 <p className="diag-step__sub">
-                  {o.nome}. Vale pra qualquer projeto da AplicaDev e, se você fechar, a plaquinha NFC de avaliação é brinde. Deixa seu contato que a gente te chama pra um papo rápido. Leva 1 minuto.
+                  {rapido
+                    ? 'Site, sistema, agendamento e automação pro seu negócio. Deixa nome e WhatsApp e a conversa continua direto no WhatsApp. Leva 10 segundos.'
+                    : `${o.nome}. Vale pra qualquer projeto da AplicaDev e, se você fechar, a plaquinha NFC de avaliação é brinde. Deixa seu contato que a gente te chama pra um papo rápido. Leva 1 minuto.`}
                 </p>
               </div>
 
@@ -163,6 +176,7 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
                   <label className="diag-label" htmlFor="wk-whatsapp">Seu WhatsApp <span className="diag-hint">(com DDD)</span></label>
                   <input id="wk-whatsapp" className={`diag-input${falta('wk-whatsapp')}`} type="tel" inputMode="tel" autoComplete="tel" maxLength={20} enterKeyHint="next" placeholder="(11) 9 9999-9999" value={d.whatsapp} onChange={e => set('whatsapp', e.target.value)} />
                 </div>
+                {!rapido && <>
                 <div className="diag-field">
                   <label className="diag-label" htmlFor="wk-negocio">Nome do seu negócio <span className="diag-hint">(opcional)</span></label>
                   <input id="wk-negocio" className="diag-input" type="text" maxLength={80} placeholder="Ex: Studio Ju Beleza" value={d.negocio} onChange={e => set('negocio', e.target.value)} />
@@ -171,8 +185,10 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
                   <label className="diag-label" htmlFor="wk-insta">Seu Instagram de trabalho <span className="diag-hint">(opcional)</span></label>
                   <input id="wk-insta" className="diag-input" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={60} placeholder="@seuperfil" value={d.instagram} onChange={e => set('instagram', e.target.value)} />
                 </div>
+                </>}
               </div>
 
+              {!rapido && <>
               <div className="diag-section">
                 <Q label="O que você quer pro seu negócio? (pode marcar mais de uma)">
                   <div className="diag-opts-col">
@@ -196,12 +212,13 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
                   <textarea id="wk-obs" className="diag-input ta" rows={3} maxLength={400} placeholder="Sua maior dificuldade hoje, uma ideia, uma dúvida" value={d.obs} onChange={e => set('obs', e.target.value)} />
                 </div>
               </div>
+              </>}
 
               {erro && <p role="alert" className="wk-erro">{erro}</p>}
 
               <div className="diag-nav">
                 <button type="button" className="diag-nav__next" onClick={enviar} disabled={saving}>
-                  {saving ? 'Enviando...' : 'Enviar'}
+                  {saving ? 'Enviando...' : rapido ? 'Continuar no WhatsApp' : 'Enviar'}
                 </button>
               </div>
             </div>

@@ -8,7 +8,8 @@ import type { KanbanPayload } from './kanban'
    Todo QR exposto diz o evento (?e=) e a peça (?de=). A rota dá o
    padrão: /workshop = telão do workshop CFK; /fale = banner e /placa =
    acrílico do stand, os dois da formatura CFK; o cartão usa
-   /fale?de=cartao. O slug do evento vira o formType no Kanban (aba
+   /fale?de=cartao. O cartão é genérico (vale fora de evento), então
+   sem ?e= ele vira o "evento" cartao-visita e não a formatura. O slug do evento vira o formType no Kanban (aba
    Eventos: criar lá o evento com o MESMO slug) e a peça vai no card,
    em "Origem".
    Sem pixel/CAPI de propósito: lead de evento não veio de anúncio e
@@ -17,6 +18,7 @@ import type { KanbanPayload } from './kanban'
 const NOMES: Record<string, string> = {
   'workshop-cfk': 'Workshop CFK',
   'formatura-cfk': 'Formatura CFK',
+  'cartao-visita': 'Cartão de visita',
 }
 const PECAS: Record<string, string> = {
   telao: 'Telão da apresentação',
@@ -35,7 +37,7 @@ export function origemDaUrl(eventoPadrao: string, pecaPadrao: string): Origem {
     e = slug(q.get('e') ?? h.get('e'))
     de = slug(q.get('de') ?? h.get('de'))
   } catch { /* URL estranha: fica o padrão da rota */ }
-  const evento = e ?? eventoPadrao
+  const evento = e ?? (de === 'cartao' ? 'cartao-visita' : eventoPadrao)
   const p = de ?? pecaPadrao
   return { evento, nome: NOMES[evento] ?? evento, de: p, peca: PECAS[p] ?? p }
 }
