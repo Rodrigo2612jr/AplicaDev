@@ -10,7 +10,8 @@ import { origemDaUrl, cardKanban, dadosEvento, enviarLeadEvento, digitos, utmEve
    já sabendo o assunto. Página única, pra responder em pé em 1 minuto.
    Quem já quer a plaquinha vai pelo QR do acrílico (/placa).
    Cartão de visita (?de=cartao): genérico, sem evento nem desconto.
-   Só nome e WhatsApp e já cai no WhatsApp com a mensagem pronta: quem
+   Só o contato (negócio e Instagram opcionais) e já cai no WhatsApp
+   com a mensagem pronta: quem
    pega cartão vai embora, a conversa tem que começar ali.
 ═══════════════════════════════════════════════════════════════ */
 type Opcoes = Record<string, string>
@@ -79,7 +80,11 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
 
   const primeiroNome = d.nome.trim().split(' ')[0]
   const waUrl = waLink(rapido
-    ? [`Oi! Sou ${d.nome.trim()}, peguei o cartão da AplicaDev e quero saber mais.`]
+    ? [
+        `Oi! Sou ${d.nome.trim()}, peguei o cartão da AplicaDev e quero saber mais.`,
+        ...(d.negocio.trim() ? [`Meu negócio: ${d.negocio.trim()}`] : []),
+        ...(d.instagram.trim() ? [`Instagram: ${d.instagram.trim()}`] : []),
+      ]
     : [
         `Oi! Sou ${d.nome.trim()}, estava no evento ${o.nome} e quero saber mais da AplicaDev.`,
         '',
@@ -162,7 +167,7 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
                 <h1 className="diag-step__title">{rapido ? 'Bora conversar?' : '20% de desconto pra quem está aqui'}</h1>
                 <p className="diag-step__sub">
                   {rapido
-                    ? 'Site, sistema, agendamento e automação pro seu negócio. Deixa nome e WhatsApp e a conversa continua direto no WhatsApp. Leva 10 segundos.'
+                    ? 'Site, sistema, agendamento e automação pro seu negócio. Deixa seu contato e a conversa continua direto no WhatsApp. Leva 20 segundos.'
                     : `${o.nome}. Vale pra qualquer projeto da AplicaDev e, se você fechar, a plaquinha NFC de avaliação é brinde. Deixa seu contato que a gente te chama pra um papo rápido. Leva 1 minuto.`}
                 </p>
               </div>
@@ -176,16 +181,14 @@ export default function Workshop({ evento = 'workshop-cfk', peca = 'telao' }: { 
                   <label className="diag-label" htmlFor="wk-whatsapp">Seu WhatsApp <span className="diag-hint">(com DDD)</span></label>
                   <input id="wk-whatsapp" className={`diag-input${falta('wk-whatsapp')}`} type="tel" inputMode="tel" autoComplete="tel" maxLength={20} enterKeyHint="next" placeholder="(11) 9 9999-9999" value={d.whatsapp} onChange={e => set('whatsapp', e.target.value)} />
                 </div>
-                {!rapido && <>
                 <div className="diag-field">
-                  <label className="diag-label" htmlFor="wk-negocio">Nome do seu negócio <span className="diag-hint">(opcional)</span></label>
+                  <label className="diag-label" htmlFor="wk-negocio">Nome do seu negócio <span className="diag-hint">(se tiver)</span></label>
                   <input id="wk-negocio" className="diag-input" type="text" maxLength={80} placeholder="Ex: Studio Ju Beleza" value={d.negocio} onChange={e => set('negocio', e.target.value)} />
                 </div>
                 <div className="diag-field">
                   <label className="diag-label" htmlFor="wk-insta">Seu Instagram de trabalho <span className="diag-hint">(opcional)</span></label>
                   <input id="wk-insta" className="diag-input" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={60} placeholder="@seuperfil" value={d.instagram} onChange={e => set('instagram', e.target.value)} />
                 </div>
-                </>}
               </div>
 
               {!rapido && <>
