@@ -6,6 +6,7 @@ import heroBgSm from './assets/hero-bg-sm.webp'
 import heroBgLg from './assets/hero-bg-lg.webp'
 import Diagnostico from './pages/Diagnostico'
 import Workshop from './pages/Workshop'
+import Placa from './pages/Placa'
 
 // Diagnostico fica no bundle inicial de propósito: é onde o tráfego pago cai
 // direto, e um chunk separado aí custaria um round-trip antes do formulário
@@ -1086,6 +1087,9 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/diagnostico" element={<Diagnostico />} />
         <Route path="/workshop" element={<Workshop />} />
+        {/* QRs impressos do stand: form curto de evento, nunca o diagnóstico dos anúncios */}
+        <Route path="/fale" element={<Workshop evento="formatura-cfk" peca="banner" />} />
+        <Route path="/placa" element={<Placa />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/privacidade" element={<Privacidade />} />

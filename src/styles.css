@@ -2155,7 +2155,9 @@ ul { list-style: none; }
 .wk .diag-nav__next { width: 100%; margin-left: 0; padding: 16px 28px; font-size: 17px; text-align: center; justify-content: center; text-decoration: none; touch-action: manipulation; }
 .wk .diag-nav__next:hover { transform: none; }
 .wk .diag-input.wk-falta { border-color: #c0392b; box-shadow: 0 0 0 3px rgba(192,57,43,.12); }
-.wk .diag-opts-col.wk-falta { outline: 2px solid #c0392b; outline-offset: 6px; border-radius: 12px; }
+.wk .diag-opts-col.wk-falta, .wk .diag-opts-multi.wk-falta { outline: 2px solid #c0392b; outline-offset: 6px; border-radius: 12px; }
+.wk .diag-section + .diag-fields { margin-top: 28px; }
+.wk .diag-opts-multi.pl-dias { grid-template-columns: repeat(3, 1fr); }
 .wk-erro { color: #c0392b; font-weight: 600; font-size: 15px; line-height: 1.4; margin-top: 18px; }
 @media (max-width: 480px) {
   .wk .diag-main { padding: 16px 12px calc(40px + env(safe-area-inset-bottom)); }
